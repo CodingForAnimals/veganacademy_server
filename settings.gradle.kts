@@ -1,0 +1,1 @@
+rootProject.name = "org.codingforanimals.veganacademy.server"
