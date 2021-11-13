@@ -19,5 +19,5 @@ data class DatabaseConfig(
     val jdbcDriver: String,
     val jdbcDatabaseUrl: String,
     val dbUser: String,
-    val dbPassword: String,
+    val dbPassword: String
 )
