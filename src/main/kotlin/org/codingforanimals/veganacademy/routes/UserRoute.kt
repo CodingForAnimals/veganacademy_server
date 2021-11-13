@@ -62,13 +62,10 @@ fun Route.userRoutes() {
     }
 
     post<UserRoutes.Register> {
-        val signupParameters = call.receive<Parameters>()
-        val password = signupParameters["password"]
-            ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Fields")
-        val displayName = signupParameters["displayName"]
-            ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Fields")
-        val email = signupParameters["email"]
-            ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Fields")
+        val body = call.receive<Parameters>()
+        val password = body["password"] ?: return@post respondMissingFields(call)
+        val displayName = body["displayName"] ?: return@post respondMissingFields(call)
+        val email = body["email"] ?: return@post respondMissingFields(call)
         val hash = jwtService.hash(password)
         try {
             val newUser = userRepository.addUser(email, displayName, hash)
@@ -86,24 +83,30 @@ fun Route.userRoutes() {
     }
 
     post<UserRoutes.Authenticate> {
-        val signInParameters = call.receive<Parameters>()
-        val password = signInParameters["password"]
-            ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Fields")
-        val email = signInParameters["email"]
-            ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Fields")
+        val body = call.receive<Parameters>()
+        val password = body["password"] ?: return@post respondMissingFields(call)
+        val email = body["email"] ?: return@post respondMissingFields(call)
         try {
             val user = userRepository.findUserByEmail(email)!!
             if (jwtService.validate(password, user.passwordHash)) {
                 call.sessions.set(MySession(user.userId))
                 call.respondText(jwtService.generateToken(user))
             } else {
-                call.respond(
-                    HttpStatusCode.BadRequest, "Log in failed"
-                )
+                respondLoginFailed(call)
             }
         } catch (e: Throwable) {
             application.log.error("Log in failed", e)
-            call.respond(HttpStatusCode.BadRequest, "Log in failed")
+            respondLoginFailed(call)
         }
     }
 }
+
+private suspend fun respondMissingFields(call: ApplicationCall) {
+    return call.respond(HttpStatusCode.BadRequest, MISSING_FIELDS_MESSAGE)
+}
+
+private suspend fun respondLoginFailed(call: ApplicationCall) {
+    return call.respond(HttpStatusCode.BadRequest, "Log in failed")
+}
+
+private const val MISSING_FIELDS_MESSAGE = "Missing fields"

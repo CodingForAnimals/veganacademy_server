@@ -1,6 +1,10 @@
-package org.codingforanimals.veganacademy
+package org.codingforanimals.veganacademy.plugins
 
 import io.ktor.application.*
+import org.codingforanimals.veganacademy.config.AppConfig
+import org.codingforanimals.veganacademy.config.DatabaseConfig
+import org.codingforanimals.veganacademy.config.JwtConfig
+import org.codingforanimals.veganacademy.config.ServerConfig
 import org.koin.ktor.ext.inject
 
 fun Application.setupConfig() {
@@ -22,25 +26,3 @@ fun Application.setupConfig() {
     val dbPassword = databaseObject.property("dbPassword").getString()
     appConfig.databaseConfig = DatabaseConfig(jdbcDriver, jdbcDatabaseUrl, dbUser, dbPassword)
 }
-
-class AppConfig {
-    lateinit var serverConfig: ServerConfig
-    lateinit var jwtConfig: JwtConfig
-    lateinit var databaseConfig: DatabaseConfig
-}
-
-data class ServerConfig(
-    val isProd: Boolean
-)
-
-data class JwtConfig(
-    val issuer: String,
-    val secret: String
-)
-
-data class DatabaseConfig(
-    val jdbcDriver: String,
-    val jdbcDatabaseUrl: String,
-    val dbUser: String,
-    val dbPassword: String
-)

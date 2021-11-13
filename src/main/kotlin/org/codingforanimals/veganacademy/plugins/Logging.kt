@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import io.ktor.application.*
 import io.ktor.features.*
-import org.codingforanimals.veganacademy.AppConfig
+import org.codingforanimals.veganacademy.config.AppConfig
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 

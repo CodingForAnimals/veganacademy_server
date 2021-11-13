@@ -1,5 +1,6 @@
-package org.codingforanimals.veganacademy
+package org.codingforanimals.veganacademy.di
 
+import org.codingforanimals.veganacademy.config.AppConfig
 import org.codingforanimals.veganacademy.auth.JwtService
 import org.codingforanimals.veganacademy.model.repository.UserRepository
 import org.codingforanimals.veganacademy.model.repository.impl.UserRepositoryImpl

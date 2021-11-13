@@ -3,7 +3,7 @@ package org.codingforanimals.veganacademy.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import org.codingforanimals.veganacademy.AppConfig
+import org.codingforanimals.veganacademy.config.AppConfig
 import org.codingforanimals.veganacademy.model.entity.User
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
