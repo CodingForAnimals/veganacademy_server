@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.codingforanimals.routes.UserRouteTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-11-07T21:56:40" hostname="AGUS" time="5.161">
-  <properties/>
-  <testcase name="asdasd dwdw" classname="org.codingforanimals.routes.UserRouteTest" time="5.161"/>
-  <system-out><![CDATA[2021-11-07 21:56:40.767 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
-2021-11-07 21:56:40.775 [Test worker] INFO  ktor.test - Application started in 0.058 seconds.
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

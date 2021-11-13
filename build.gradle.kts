@@ -7,6 +7,7 @@ val hikaricp_version: String by project
 val junit_version: String by project
 val mockk_version: String by project
 val koin_version: String by project
+val jbcrypt_version: String by project
 
 plugins {
     application
@@ -37,7 +38,7 @@ dependencies {
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
-
+    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
