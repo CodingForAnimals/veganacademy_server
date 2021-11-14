@@ -1,7 +1,0 @@
-u2021-11-14 14:40:39.904 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
-_2021-11-14 14:40:39.912 [Test worker] INFO  ktor.test - Application started in 0.067 seconds.
-W2021-11-14 14:40:39.935 [Test worker] INFO  [Koin] - loaded 3 definitions - 1.7609 ms
-•2021-11-14 14:40:40.424 [Test worker] DEBUG com.zaxxer.hikari.HikariConfig - Driver class jdbcDriver not found in Thread context class loader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93, trying classloader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93
-Ò2021-11-14 14:40:40.425 [Test worker] ERROR com.zaxxer.hikari.HikariConfig - Failed to load driver class jdbcDriver from HikariConfig class classloader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93
-x2021-11-14 14:40:40.428 [Test worker] INFO  ktor.test - Application stopping: io.ktor.application.Application@1422ffa4
-w2021-11-14 14:40:40.430 [Test worker] INFO  ktor.test - Application stopped: io.ktor.application.Application@1422ffa4
