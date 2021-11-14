@@ -1,23 +1,18 @@
 package org.codingforanimals.veganacademy.config
 
-class AppConfig {
-    lateinit var serverConfig: ServerConfig
-    lateinit var jwtConfig: JwtConfig
-    lateinit var databaseConfig: DatabaseConfig
+import io.ktor.application.*
+import io.ktor.locations.*
+import org.codingforanimals.veganacademy.config.plugins.*
+import org.koin.core.module.Module
+
+@KtorExperimentalLocationsAPI
+fun Application.configApp(koinModules: List<Module>) {
+    configureKoin(koinModules)
+    setupConfig()
+    configureAuth()
+    configureGson()
+    configureLogging()
+    configureLocations()
+    configureRoutes()
+    configureSessions()
 }
-
-data class ServerConfig(
-    val isProd: Boolean
-)
-
-data class JwtConfig(
-    val issuer: String,
-    val secret: String
-)
-
-data class DatabaseConfig(
-    val jdbcDriver: String,
-    val jdbcDatabaseUrl: String,
-    val dbUser: String,
-    val dbPassword: String
-)
