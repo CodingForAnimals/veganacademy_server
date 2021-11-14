@@ -31,26 +31,18 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("com.zaxxer:HikariCP:$hikaricp_version")
+    implementation("io.ktor:ktor-locations:$ktor_version")
+    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
-    // Portgres
-    implementation("org.postgresql:postgresql:$postgres_version")
-    implementation("com.zaxxer:HikariCP:$hikaricp_version")
-
-    // Exposed
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-
-    // BCrypt
-    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
-
-    // Tests
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.mockk:mockk:$mockk_version")
