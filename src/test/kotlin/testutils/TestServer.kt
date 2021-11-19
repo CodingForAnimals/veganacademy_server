@@ -2,7 +2,6 @@ package testutils
 
 import io.ktor.config.*
 import io.ktor.http.*
-import io.ktor.http.cio.*
 import io.ktor.locations.*
 import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.config.plugins.AppConfig
@@ -16,7 +15,6 @@ import org.codingforanimals.veganacademy.features.model.repository.UserRepositor
 import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
 import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.codingforanimals.veganacademy.run
-import org.eclipse.jetty.client.api.Response
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

@@ -8,7 +8,6 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.Route
 import io.ktor.sessions.*
-import io.netty.handler.codec.json.JsonObjectDecoder
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.koin.ktor.ext.inject
