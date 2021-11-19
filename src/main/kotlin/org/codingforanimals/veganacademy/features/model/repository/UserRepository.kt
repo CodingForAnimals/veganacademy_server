@@ -1,6 +1,6 @@
 package org.codingforanimals.veganacademy.features.model.repository
 
-import org.codingforanimals.veganacademy.features.model.entity.User
+import org.codingforanimals.veganacademy.features.model.dao.User
 
 interface UserRepository {
 

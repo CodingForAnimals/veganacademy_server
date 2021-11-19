@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import org.codingforanimals.veganacademy.config.plugins.AppConfig
-import org.codingforanimals.veganacademy.features.model.entity.User
+import org.codingforanimals.veganacademy.features.model.dao.User
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
@@ -24,8 +24,8 @@ class JwtService(appConfig: AppConfig) {
         return BCrypt.checkpw(password, passwordHash)
     }
 
-    fun generateToken(user: User): String {
-        return JWT.create().withSubject("Authentication").withIssuer(issuer).withClaim("id", user.userId)
+    fun generateToken(id: Int): String {
+        return JWT.create().withSubject("Authentication").withIssuer(issuer).withClaim("id", id)
             .withExpiresAt(expirationDate()).sign(algorithm)
     }
 

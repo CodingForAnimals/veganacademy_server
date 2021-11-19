@@ -20,7 +20,8 @@ fun Application.setupConfig() {
     val jdbcDatabaseUrl = databaseObject.property("jdbcDatabaseUrl").getString()
     val dbUser = databaseObject.property("dbUser").getString()
     val dbPassword = databaseObject.property("dbPassword").getString()
-    appConfig.databaseConfig = DatabaseConfig(jdbcDriver, jdbcDatabaseUrl, dbUser, dbPassword)
+    val maxPoolSize = databaseObject.property("maxPoolSize").getString().toInt()
+    appConfig.databaseConfig = DatabaseConfig(jdbcDriver, jdbcDatabaseUrl, dbUser, dbPassword, maxPoolSize)
 }
 
 class AppConfig {
@@ -42,5 +43,6 @@ data class DatabaseConfig(
     val jdbcDriver: String,
     val jdbcDatabaseUrl: String,
     val dbUser: String,
-    val dbPassword: String
+    val dbPassword: String,
+    val maxPoolSize: Int
 )

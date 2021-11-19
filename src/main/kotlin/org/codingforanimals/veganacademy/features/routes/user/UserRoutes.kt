@@ -1,7 +1,6 @@
 package org.codingforanimals.veganacademy.features.routes.user
 
 import io.ktor.application.*
-import io.ktor.auth.*
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.locations.post
@@ -10,6 +9,7 @@ import io.ktor.response.*
 import io.ktor.routing.Route
 import io.ktor.sessions.*
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
+import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.koin.ktor.ext.inject
 
 @KtorExperimentalLocationsAPI
@@ -35,11 +35,10 @@ fun Route.userRoutes() {
     val userRepository by inject<UserRepository>()
     val jwtService by inject<JwtService>()
 
-    authenticate("jwt") {
-
-    }
+//    authenticate("jwt") {
 
     get<UserRoutes.GetAll> {
+
         try {
             val users = userRepository.findAllUsers()
             call.respond(users)
@@ -48,6 +47,8 @@ fun Route.userRoutes() {
             call.respond(HttpStatusCode.BadRequest, "Error getting users")
         }
     }
+
+//    }
 
     get<UserRoutes.Delete> {
         try {
@@ -61,22 +62,25 @@ fun Route.userRoutes() {
 
     post<UserRoutes.Register> {
         val body = call.receive<Parameters>()
+        val email = body["email"] ?: return@post respondMissingFields(call)
         val password = body["password"] ?: return@post respondMissingFields(call)
         val displayName = body["displayName"] ?: return@post respondMissingFields(call)
-        val email = body["email"] ?: return@post respondMissingFields(call)
-        val hash = jwtService.hash(password)
+
         try {
+            val user = userRepository.findUserByEmail(email)
+            check(user == null)
+
+            val hash = jwtService.hash(password)
             val newUser = userRepository.addUser(email, displayName, hash)
-            newUser?.userId?.let {
-                call.sessions.set(MySession(it))
-                call.respondText(
-                    jwtService.generateToken(newUser),
-                    status = HttpStatusCode.Created
-                )
+            newUser?.let {
+                val id = it.id.value
+                val token = jwtService.generateToken(id)
+                call.sessions.set(MySession(id))
+                call.respond(Response.success(token, "User registered successfully"))
             }
         } catch (e: Throwable) {
-            application.log.error("Failed to register user", e)
-            call.respond(HttpStatusCode.BadRequest, "Problems creating User")
+            application.log.error("Error in route ${call.request.uri}", e)
+            call.respond(HttpStatusCode.InternalServerError, Response.failure<String>("User registration failed"))
         }
     }
 
@@ -86,12 +90,10 @@ fun Route.userRoutes() {
         val email = body["email"] ?: return@post respondMissingFields(call)
         try {
             val user = userRepository.findUserByEmail(email)!!
-            if (jwtService.validate(password, user.passwordHash)) {
-                call.sessions.set(MySession(user.userId))
-                call.respondText(jwtService.generateToken(user))
-            } else {
-                respondLoginFailed(call)
-            }
+            check(jwtService.validate(password, user.passwordHash)) { "Log in failed" }
+            val id = user.id.value
+            call.sessions.set(MySession(id))
+            call.respondText(jwtService.generateToken(id))
         } catch (e: Throwable) {
             application.log.error("Log in failed", e)
             respondLoginFailed(call)

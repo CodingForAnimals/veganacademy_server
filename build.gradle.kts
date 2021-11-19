@@ -8,6 +8,7 @@ val junit_version: String by project
 val mockk_version: String by project
 val koin_version: String by project
 val jbcrypt_version: String by project
+val h2_version: String by project
 
 plugins {
     application
@@ -26,25 +27,38 @@ repositories {
 
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
+    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-gson:$ktor_version")
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-    implementation("org.postgresql:postgresql:$postgres_version")
-    implementation("com.zaxxer:HikariCP:$hikaricp_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
-    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
+    implementation("ch.qos.logback:logback-classic:$logback_version")
+
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    testImplementation("io.insert-koin:koin-test:$koin_version")
+    testImplementation("io.insert-koin:koin-test-junit4:$koin_version")
 
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    // BCrypt
+    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
+
+    // Database
+    implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("com.zaxxer:HikariCP:$hikaricp_version")
+
+    // ORM
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.mockk:mockk:$mockk_version")
+
+    // H2 for testing only
+    testImplementation("com.h2database:h2:$h2_version")
 
 }

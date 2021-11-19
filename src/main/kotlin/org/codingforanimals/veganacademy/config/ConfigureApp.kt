@@ -6,7 +6,7 @@ import org.codingforanimals.veganacademy.config.plugins.*
 import org.koin.core.module.Module
 
 @KtorExperimentalLocationsAPI
-fun Application.configApp(koinModules: List<Module>) {
+fun Application.configureApp(koinModules: List<Module>) {
     configureKoin(koinModules)
     setupConfig()
     configureAuth()
