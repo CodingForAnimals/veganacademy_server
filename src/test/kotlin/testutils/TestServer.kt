@@ -1,8 +1,8 @@
 package testutils
 
-import io.ktor.application.*
 import io.ktor.config.*
 import io.ktor.http.*
+import io.ktor.http.cio.*
 import io.ktor.locations.*
 import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.config.plugins.AppConfig
@@ -10,13 +10,13 @@ import org.codingforanimals.veganacademy.config.plugins.DatabaseConfig
 import org.codingforanimals.veganacademy.config.plugins.ServerConfig
 import org.codingforanimals.veganacademy.database.DatabaseFactory
 import org.codingforanimals.veganacademy.database.DatabaseFactoryForServerTest
-import org.codingforanimals.veganacademy.database.DatabaseFactoryImpl
 import org.codingforanimals.veganacademy.features.model.data.source.UserDataSource
 import org.codingforanimals.veganacademy.features.model.data.source.UserDataSourceImpl
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
 import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.codingforanimals.veganacademy.run
+import org.eclipse.jetty.client.api.Response
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -66,7 +66,7 @@ fun setContentType(request: TestApplicationRequest) =
     request.addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
 
 val appTestModule = module {
-    single {  getAppConfigForUnitTest() }
+    single { getAppConfigForUnitTest() }
     single { JwtService(get()) }
     single<DatabaseFactory> { DatabaseFactoryForServerTest(get()) }
     single<UserDataSource> { UserDataSourceImpl() }
