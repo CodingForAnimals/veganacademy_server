@@ -2,6 +2,7 @@ package testutils
 
 import io.ktor.application.*
 import io.ktor.config.*
+import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.config.plugins.AppConfig
@@ -60,6 +61,9 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
         }, block
     )
 }
+
+fun setContentType(request: TestApplicationRequest) =
+    request.addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
 
 val appTestModule = module {
     single {  getAppConfigForUnitTest() }

@@ -1,24 +1,27 @@
 package org.codingforanimals.veganacademy.features.routes.user
 
 import com.google.gson.GsonBuilder
-import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.locations.*
-import io.ktor.request.*
 import io.ktor.server.testing.*
-import kotlinx.coroutines.launch
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
-import org.koin.test.AutoCloseKoinTest
+import testutils.setContentType
 import testutils.withTestServer
-import kotlin.test.*
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @KtorExperimentalLocationsAPI
-internal class UserRoutesTest : AutoCloseKoinTest() {
+class RegisterRouteTest {
+
+    fun registerHref(engine: TestApplicationEngine) = engine.application.locations.href(
+        UserRoutes.Register(parent = UserRoutes())
+    )
 
     private val gson = GsonBuilder().create()
 
-    private val registerBody = listOf(
+    private val userBody = listOf(
         "email" to "email",
         "password" to "password",
         "displayName" to "displayName"
@@ -26,13 +29,9 @@ internal class UserRoutesTest : AutoCloseKoinTest() {
 
     @Test
     fun `given unique email, when registering, then user is added`() = withTestServer {
-        val href = application.locations.href(
-            UserRoutes.Register(parent = UserRoutes())
-        )
-
-        handleRequest(HttpMethod.Post, href) {
-            addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
-            setBody(registerBody)
+        handleRequest(HttpMethod.Post, registerHref(this)) {
+            setContentType(this)
+            setBody(userBody)
         }.apply {
             val res = gson.fromJson(response.content!!, Response::class.java)
             assertTrue(res.success)
@@ -42,25 +41,17 @@ internal class UserRoutesTest : AutoCloseKoinTest() {
 
     @Test
     fun `given user already exists, when registering, then respond failure`() = withTestServer {
-        val href = application.locations.href(
-            UserRoutes.Register(parent = UserRoutes())
-        )
-
-        handleRequest(HttpMethod.Post, href) {
-            addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
-            setBody(registerBody)
+        handleRequest(HttpMethod.Post, registerHref(this)) {
+            setContentType(this)
+            setBody(userBody)
         }.apply {
-            handleRequest(HttpMethod.Post, href) {
-                addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
-                setBody(registerBody)
+            handleRequest(HttpMethod.Post, registerHref(this@withTestServer)) {
+                setContentType(this)
+                setBody(userBody)
             }.apply {
                 val res = gson.fromJson(response.content!!, Response::class.java)
                 assertFalse(res.success)
-                assertNull(res.content)
             }
         }
-
-
     }
-
 }

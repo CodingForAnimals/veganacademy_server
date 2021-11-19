@@ -71,13 +71,13 @@ fun Route.userRoutes() {
             check(user == null)
 
             val hash = jwtService.hash(password)
-            val newUser = userRepository.addUser(email, displayName, hash)
-            newUser?.let {
-                val id = it.id.value
-                val token = jwtService.generateToken(id)
-                call.sessions.set(MySession(id))
-                call.respond(Response.success(token, "User registered successfully"))
-            }
+            val newUser = userRepository.addUser(email, displayName, hash)!!
+
+            val id = newUser.id.value
+            val token = jwtService.generateToken(id)
+
+            call.sessions.set(MySession(id))
+            call.respond(Response.success(token, "User registered successfully"))
         } catch (e: Throwable) {
             application.log.error("Error in route ${call.request.uri}", e)
             call.respond(HttpStatusCode.InternalServerError, Response.failure<String>("User registration failed"))
@@ -91,12 +91,15 @@ fun Route.userRoutes() {
         try {
             val user = userRepository.findUserByEmail(email)!!
             check(jwtService.validate(password, user.passwordHash)) { "Log in failed" }
+
             val id = user.id.value
+            val token = jwtService.generateToken(id)
+
             call.sessions.set(MySession(id))
-            call.respondText(jwtService.generateToken(id))
+            call.respond(Response.success("User authenticated successfully", token))
         } catch (e: Throwable) {
-            application.log.error("Log in failed", e)
-            respondLoginFailed(call)
+            application.log.error("Error in route ${call.request.uri}", e)
+            call.respond(HttpStatusCode.InternalServerError, Response.failure<String>("User authentication failed"))
         }
     }
 }
