@@ -1,12 +1,11 @@
 package org.codingforanimals.veganacademy.features.model.repository.impl
 
 import org.codingforanimals.veganacademy.features.model.dao.User
-import org.codingforanimals.veganacademy.features.model.data.source.UserDataSource
+import org.codingforanimals.veganacademy.features.model.data.source.UserSource
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
-import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-class UserRepositoryImpl(private val source: UserDataSource) : UserRepository {
+class UserRepositoryImpl(private val source: UserSource) : UserRepository {
 
     override suspend fun addUser(email: String, displayName: String, passwordHash: String): User? {
         return newSuspendedTransaction {

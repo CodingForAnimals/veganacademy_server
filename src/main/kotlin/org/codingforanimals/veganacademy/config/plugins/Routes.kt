@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import org.codingforanimals.veganacademy.features.routes.recipes.recipeRoutes
 import org.codingforanimals.veganacademy.features.routes.user.userRoutes
 
 @KtorExperimentalLocationsAPI
@@ -11,6 +12,7 @@ fun Application.configureRoutes() {
 
     routing {
         userRoutes()
+        recipeRoutes()
         get("/") {
             call.respondText("This is a sample ktor backend!")
         }

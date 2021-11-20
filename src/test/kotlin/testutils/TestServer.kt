@@ -1,5 +1,7 @@
 package testutils
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -9,14 +11,16 @@ import org.codingforanimals.veganacademy.config.plugins.DatabaseConfig
 import org.codingforanimals.veganacademy.config.plugins.ServerConfig
 import org.codingforanimals.veganacademy.database.DatabaseFactory
 import org.codingforanimals.veganacademy.database.DatabaseFactoryForServerTest
-import org.codingforanimals.veganacademy.features.model.data.source.UserDataSource
-import org.codingforanimals.veganacademy.features.model.data.source.UserDataSourceImpl
+import org.codingforanimals.veganacademy.features.model.data.source.UserSource
+import org.codingforanimals.veganacademy.features.model.data.source.impl.UserSourceImpl
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
 import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.codingforanimals.veganacademy.run
 import org.koin.core.module.Module
 import org.koin.dsl.module
+
+val gson: Gson = GsonBuilder().create()
 
 fun MapApplicationConfig.createConfigForTesting() {
     // Server config
@@ -67,7 +71,7 @@ val appTestModule = module {
     single { getAppConfigForUnitTest() }
     single { JwtService(get()) }
     single<DatabaseFactory> { DatabaseFactoryForServerTest(get()) }
-    single<UserDataSource> { UserDataSourceImpl() }
+    single<UserSource> { UserSourceImpl() }
     single<UserRepository> { UserRepositoryImpl(get()) }
 
 }

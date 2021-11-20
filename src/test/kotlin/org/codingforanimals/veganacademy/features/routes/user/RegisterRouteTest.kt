@@ -6,6 +6,7 @@ import io.ktor.locations.*
 import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
+import testutils.gson
 import testutils.setContentType
 import testutils.withTestServer
 import kotlin.test.assertFalse
@@ -18,8 +19,6 @@ class RegisterRouteTest {
     fun registerHref(engine: TestApplicationEngine) = engine.application.locations.href(
         UserRoutes.Register(parent = UserRoutes())
     )
-
-    private val gson = GsonBuilder().create()
 
     private val userBody = listOf(
         "email" to "email",

@@ -11,6 +11,7 @@ class DatabaseFactoryImpl(appConfig: AppConfig) : DatabaseFactory {
 
     override fun connect() {
         Database.connect(hikari())
+        SchemaDefinition.createSchema()
     }
 
     override fun close() {

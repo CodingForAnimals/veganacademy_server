@@ -7,6 +7,7 @@ import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
+import testutils.gson
 import testutils.setContentType
 import testutils.withTestServer
 import kotlin.test.assertFalse
@@ -15,8 +16,6 @@ import kotlin.test.assertTrue
 
 @KtorExperimentalLocationsAPI
 internal class AuthenticateRouteTest : AutoCloseKoinTest() {
-
-    private val gson = GsonBuilder().create()
 
     private val userBody = listOf(
         "email" to "email",
