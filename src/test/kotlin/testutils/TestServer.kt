@@ -85,3 +85,5 @@ val appTestModule = module {
     single<RecipeSource> { RecipeSourceImpl() }
     single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 }
+
+fun buildRequestBody(json: String) = mapOf("content" to json).toString()

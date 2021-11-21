@@ -10,6 +10,7 @@ import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
+import testutils.buildRequestBody
 import testutils.gson
 import testutils.setContentTypeText
 import testutils.withTestServer
@@ -40,13 +41,11 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
         )
     )
 
-    private val submitRequest = mapOf("content" to recipeJSON).toString()
-
     @Test
     fun `given recipe request, when submitting, then return success`() = withTestServer {
         handleRequest(HttpMethod.Post, application.locations.href(RecipeRoutes.Submit(RecipeRoutes()))) {
             setContentTypeText(this)
-            setBody(submitRequest)
+            setBody(buildRequestBody(recipeJSON))
         }.apply {
             val res = gson.fromJson(response.content!!, Response::class.java)
             assertTrue(res.success)
