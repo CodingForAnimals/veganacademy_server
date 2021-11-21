@@ -1,6 +1,5 @@
 package org.codingforanimals.veganacademy.features.model.dao
 
-import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -10,6 +9,7 @@ object RecipeTable : IntIdTable() {
     val name = varchar("title", 64)
     val description = varchar("description", 256)
     val categoriesId = varchar("categories_id", 16)
+    val likes = integer("likes")
 }
 
 class Recipe(id: EntityID<Int>) : IntEntity(id) {
@@ -17,38 +17,51 @@ class Recipe(id: EntityID<Int>) : IntEntity(id) {
 
     var name by RecipeTable.name
     var description by RecipeTable.description
-    val categoriesId by RecipeTable.categoriesId
-//    val cookingSteps by CookingStep referrersOn CookingStepTable.recipeId
-
-    fun toDto() = RecipeDTO(
-        id = id.value,
-        name = name,
-        description = description,
-        categoriesId = categoriesId
-    )
-
+    var categoriesId by RecipeTable.categoriesId
+    val steps by RecipeStep referrersOn RecipeStepTable.recipe
+    val ingredients by RecipeIngredient optionalReferrersOn RecipeIngredientTable.recipe
+    var likes by RecipeTable.likes
 }
 
-//object CookingStepTable : IntIdTable() {
-//    val recipeId = long("recipe_id")
-//    val stepNumber = short("step_number")
-//    val stepDescription = varchar("step_description", 256)
-//}
-//
-//class CookingStep(id: EntityID<Int>) : IntEntity(id) {
-//    companion object : IntEntityClass<CookingStep>(CookingStepTable)
-//
-//    var stepNumber by CookingStepTable.stepNumber
-//    var stepDescription by CookingStepTable.stepDescription
-//}
-//
-//
-//object FoodCategoryTable : IntIdTable() {
-//    val title = varchar("name", 64)
-//}
-//
-//class FoodCategory(id: EntityID<Int>) : IntEntity(id) {
-//    companion object : IntEntityClass<FoodCategory>(FoodCategoryTable)
-//
-//    var title by FoodCategoryTable.title
-//}
+object RecipeStepTable : IntIdTable() {
+    val recipe = reference("recipe", RecipeTable)
+    val number = short("number")
+    val description = varchar("description", 256)
+}
+
+class RecipeStep(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<RecipeStep>(RecipeStepTable)
+
+    var recipe by Recipe referencedOn RecipeStepTable.recipe
+    var number by RecipeStepTable.number
+    var description by RecipeStepTable.description
+}
+
+object RecipeIngredientTable : IntIdTable() {
+    val recipe = reference("recipe", RecipeTable).nullable()
+    val quantity = integer("quantity")
+    val measurementUnit = varchar("measurement_unit", 16)
+    val name = varchar("name", 64)
+    val replacement = reference("replacement", RecipeIngredientTable).nullable()
+}
+
+class RecipeIngredient(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<RecipeIngredient>(RecipeIngredientTable)
+
+    var recipe: Recipe? by Recipe optionalReferencedOn RecipeIngredientTable.recipe
+    var name by RecipeIngredientTable.name
+    var quantity by RecipeIngredientTable.quantity
+    var measurementUnit by RecipeIngredientTable.measurementUnit
+    var replacement: RecipeIngredient? by RecipeIngredient optionalReferencedOn RecipeIngredientTable.replacement
+}
+
+
+object FoodCategoryTable : IntIdTable() {
+    val category = varchar("name", 64)
+}
+
+class FoodCategory(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<FoodCategory>(FoodCategoryTable)
+
+    var category by FoodCategoryTable.category
+}

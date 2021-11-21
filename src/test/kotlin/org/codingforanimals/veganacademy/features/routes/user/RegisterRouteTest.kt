@@ -1,13 +1,12 @@
 package org.codingforanimals.veganacademy.features.routes.user
 
-import com.google.gson.GsonBuilder
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.server.testing.*
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
 import testutils.gson
-import testutils.setContentType
+import testutils.setContentTypeFormUrlEncoded
 import testutils.withTestServer
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -29,7 +28,7 @@ class RegisterRouteTest {
     @Test
     fun `given unique email, when registering, then user is added`() = withTestServer {
         handleRequest(HttpMethod.Post, registerHref(this)) {
-            setContentType(this)
+            setContentTypeFormUrlEncoded(this)
             setBody(userBody)
         }.apply {
             val res = gson.fromJson(response.content!!, Response::class.java)
@@ -41,11 +40,11 @@ class RegisterRouteTest {
     @Test
     fun `given user already exists, when registering, then respond failure`() = withTestServer {
         handleRequest(HttpMethod.Post, registerHref(this)) {
-            setContentType(this)
+            setContentTypeFormUrlEncoded(this)
             setBody(userBody)
         }.apply {
             handleRequest(HttpMethod.Post, registerHref(this@withTestServer)) {
-                setContentType(this)
+                setContentTypeFormUrlEncoded(this)
                 setBody(userBody)
             }.apply {
                 val res = gson.fromJson(response.content!!, Response::class.java)

@@ -1,6 +1,5 @@
 package org.codingforanimals.veganacademy.features.routes.user
 
-import com.google.gson.GsonBuilder
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.server.testing.*
@@ -8,7 +7,7 @@ import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
 import testutils.gson
-import testutils.setContentType
+import testutils.setContentTypeFormUrlEncoded
 import testutils.withTestServer
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -30,7 +29,7 @@ internal class AuthenticateRouteTest : AutoCloseKoinTest() {
     @Test
     fun `given user doesn't exists, when authenticating, then respond failure`() = withTestServer {
         handleRequest(HttpMethod.Post, href(this)) {
-            setContentType(this)
+            setContentTypeFormUrlEncoded(this)
             setBody(userBody)
         }.apply {
             val res = gson.fromJson(response.content!!, Response::class.java)
@@ -42,11 +41,11 @@ internal class AuthenticateRouteTest : AutoCloseKoinTest() {
     fun `given user exists, when authenticating, then respond success`() = withTestServer {
         val registerHref = application.locations.href(UserRoutes.Register(UserRoutes()))
         handleRequest(HttpMethod.Post, registerHref) {
-            setContentType(this)
+            setContentTypeFormUrlEncoded(this)
             setBody(userBody)
         }.apply {
             handleRequest(HttpMethod.Post, href(this@withTestServer)) {
-                setContentType(this)
+                setContentTypeFormUrlEncoded(this)
                 setBody(userBody)
             }.apply {
                 val res = gson.fromJson(response.content!!, Response::class.java)

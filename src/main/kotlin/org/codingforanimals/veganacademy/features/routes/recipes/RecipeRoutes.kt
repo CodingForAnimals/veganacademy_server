@@ -8,7 +8,6 @@ import io.ktor.locations.post
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.codingforanimals.veganacademy.features.model.dao.Recipe
 import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.features.routes.common.Request
@@ -38,20 +37,17 @@ fun Route.recipeRoutes() {
     post<RecipeRoutes.Submit> {
         try {
             val requestType = genericType<Request<RecipeDTO>>()
-            val dto = gson.fromJson<Request<RecipeDTO>>(call.receive<String>(), requestType)
+            val requestRaw = call.receive<String>()
+            val request = gson.fromJson<Request<RecipeDTO>>(requestRaw, requestType)
 
-            val insertedId = recipeRepository.submitRecipe(dto.request)
-            check(insertedId != null) { "Recipe submission failed" }
+            val newRecipe = recipeRepository.submitRecipe(request.content)
+            check(newRecipe != null) { "Recipe submission failed" }
 
-            val recipe = Recipe[insertedId].toDto()
+            call.respond(Response.success("Recipe submitted successfully", newRecipe))
 
-            call.respond(Response.success("Recipe submitted successfully", insertedId))
-
-
-            call.respond(Response.success("success!", dto))
         } catch (e: Throwable) {
-            application.log.error(e.toString())
-            call.respond(HttpStatusCode.InternalServerError, Response.failure<String>("Recipe submission failed"))
+            application.log.error(e.stackTraceToString())
+            call.respond(HttpStatusCode.InternalServerError, Response.failure<Any>("Recipe submission failed"))
         }
     }
 

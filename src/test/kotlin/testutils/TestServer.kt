@@ -11,9 +11,13 @@ import org.codingforanimals.veganacademy.config.plugins.DatabaseConfig
 import org.codingforanimals.veganacademy.config.plugins.ServerConfig
 import org.codingforanimals.veganacademy.database.DatabaseFactory
 import org.codingforanimals.veganacademy.database.DatabaseFactoryForServerTest
+import org.codingforanimals.veganacademy.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.features.model.data.source.UserSource
+import org.codingforanimals.veganacademy.features.model.data.source.impl.RecipeSourceImpl
 import org.codingforanimals.veganacademy.features.model.data.source.impl.UserSourceImpl
+import org.codingforanimals.veganacademy.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
+import org.codingforanimals.veganacademy.features.model.repository.impl.RecipeRepositoryImpl
 import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
 import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.codingforanimals.veganacademy.run
@@ -64,14 +68,20 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
     )
 }
 
-fun setContentType(request: TestApplicationRequest) =
+fun setContentTypeFormUrlEncoded(request: TestApplicationRequest) =
     request.addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+
+fun setContentTypeText(request: TestApplicationRequest) =
+    request.addHeader(HttpHeaders.ContentType, ContentType.Text.Plain.toString())
 
 val appTestModule = module {
     single { getAppConfigForUnitTest() }
     single { JwtService(get()) }
     single<DatabaseFactory> { DatabaseFactoryForServerTest(get()) }
+
     single<UserSource> { UserSourceImpl() }
     single<UserRepository> { UserRepositoryImpl(get()) }
 
+    single<RecipeSource> { RecipeSourceImpl() }
+    single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 }

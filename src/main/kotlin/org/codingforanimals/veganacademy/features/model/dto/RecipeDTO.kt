@@ -5,21 +5,28 @@ data class RecipeDTO(
     var name: String,
     var description: String,
     var categoriesId: String,
-//    var cookingSteps: List<CookingStepDTO>,
-//    var cookingIngredients: List<CookingIngredientDTO>,
-//    var likes: Int,
+    var steps: List<RecipeStepDTO>,
+    var ingredients: List<RecipeIngredientDTO>,
+    var likes: Int,
 )
 
-data class CookingStepDTO(
+data class RecipeStepDTO(
     var id: Int? = null,
-    var stepNumber: Int,
-    var stepDescription: String,
+    var number: Int,
+    var description: String,
 )
 
-data class CookingIngredientDTO(
+class RecipeIngredientDTO(
+    var replacement: BaseRecipeIngredientDTO?,
+    id: Int? = null,
+    name: String,
+    quantity: Int,
+    measurementUnit: String
+) : BaseRecipeIngredientDTO(id, name, quantity, measurementUnit)
+
+open class BaseRecipeIngredientDTO(
     var id: Int? = null,
-    var amount: Int,
-    var measurementUnit: String,
     var name: String,
-    var replacement: String? = null,
+    var quantity: Int,
+    var measurementUnit: String,
 )

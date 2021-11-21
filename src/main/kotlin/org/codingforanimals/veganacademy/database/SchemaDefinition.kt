@@ -1,5 +1,7 @@
 package org.codingforanimals.veganacademy.database
 
+import org.codingforanimals.veganacademy.features.model.dao.RecipeIngredientTable
+import org.codingforanimals.veganacademy.features.model.dao.RecipeStepTable
 import org.codingforanimals.veganacademy.features.model.dao.RecipeTable
 import org.codingforanimals.veganacademy.features.model.dao.UserTable
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -9,8 +11,9 @@ object SchemaDefinition {
 
     fun createSchema() {
         transaction {
-            SchemaUtils.create(UserTable)
-            SchemaUtils.create(RecipeTable)
+
+            SchemaUtils.drop(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
+            SchemaUtils.create(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
         }
     }
 
