@@ -61,4 +61,6 @@ dependencies {
     // H2 for testing only
     testImplementation("com.h2database:h2:$h2_version")
 
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-RC")
+
 }

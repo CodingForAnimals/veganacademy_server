@@ -9,8 +9,12 @@ class UserRepositoryImpl(private val source: UserSource) : UserRepository {
 
     override suspend fun addUser(email: String, displayName: String, passwordHash: String): User? {
         return newSuspendedTransaction {
-            val newUserId = source.createUser(email, displayName, passwordHash)
-            User.findById(newUserId)
+            val user = source.findUserByEmail(email)
+            return@newSuspendedTransaction if (user == null) {
+                source.createUser(email, displayName, passwordHash)
+            } else {
+                null
+            }
         }
     }
 
@@ -19,7 +23,7 @@ class UserRepositoryImpl(private val source: UserSource) : UserRepository {
     }
 
     override suspend fun findUserByEmail(email: String): User? {
-        return newSuspendedTransaction { source.getUserByEmail(email) }
+        return newSuspendedTransaction { source.findUserByEmail(email) }
     }
 
     override suspend fun findAllUsers(): List<User?> {
