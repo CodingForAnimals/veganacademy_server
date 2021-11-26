@@ -46,6 +46,7 @@ class UserRepositoryImplTest {
         database.close()
     }
 
+
     @Test
     fun `given user doesn't exist, when add user, then return user`() = runBlockingTest {
         val mockUser =  transaction {
