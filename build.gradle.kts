@@ -12,7 +12,7 @@ val h2_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.5.31"
+    kotlin("jvm") version "1.6.0"
 }
 
 group = "org.codingforanimals"
@@ -36,7 +36,8 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-
+//    testImplementation ("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
+//    testImplementation ("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")

@@ -8,12 +8,12 @@ import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.features.routes.common.Response
-import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
 import testutils.buildRequestBody
 import testutils.gson
 import testutils.setContentTypeText
 import testutils.withTestServer
+import org.junit.Test
 import kotlin.test.assertTrue
 
 @KtorExperimentalLocationsAPI
