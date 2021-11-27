@@ -4,7 +4,8 @@ import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.database.DatabaseFactoryForUnitTest
 import org.codingforanimals.veganacademy.features.model.dao.Recipe
 import org.codingforanimals.veganacademy.features.model.data.source.RecipeSource
@@ -24,6 +25,7 @@ import org.koin.test.KoinTestRule
 import org.koin.test.get
 
 
+@ExperimentalCoroutinesApi
 class RecipeRepositoryImplTest : KoinTest {
 
     @get:Rule
@@ -75,7 +77,7 @@ class RecipeRepositoryImplTest : KoinTest {
     }
 
     @Test
-    fun `given error, when submit recipe, don't delegate to source`() = runBlockingTest {
+    fun `given error, when submit recipe, don't delegate to source`() = runTest {
         every { recipeSource.addRecipe(any()) } returns null
 
         recipeRepository.submitRecipe(recipeDTO)
@@ -88,7 +90,7 @@ class RecipeRepositoryImplTest : KoinTest {
     }
 
     @Test
-    fun `given success, when submit recipe, delegate to source`() = runBlockingTest {
+    fun `given success, when submit recipe, delegate to source`() = runTest {
         transaction {
             recipe = Recipe.new {
                 name = "test recipe"

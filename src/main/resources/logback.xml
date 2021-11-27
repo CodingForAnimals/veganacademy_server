@@ -6,7 +6,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DEST}/veganacademy_server.log</file>
+        <file>logs/veganacademy_server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_DEST}/veganacademy_log.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>${LOG_MAX_HISTORY}</maxHistory>

@@ -3,7 +3,8 @@ package org.codingforanimals.veganacademy.features.model.repository.impl
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.database.DatabaseFactory
 import org.codingforanimals.veganacademy.database.DatabaseFactoryForUnitTest
 import org.codingforanimals.veganacademy.features.model.dao.User
@@ -17,16 +18,10 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 
+@ExperimentalCoroutinesApi
 class UserRepositoryImplTest {
 
     private val source: UserSource = mockk()
-
-//    @get:Rule
-//    val koinTestRule = KoinTestRule.create {
-//        modules(module {
-//            single<UserRepository> { UserRepositoryImpl(mockk()) }
-//        })
-//    }
 
     private lateinit var database: DatabaseFactory
     private lateinit var repository: UserRepository
@@ -48,8 +43,8 @@ class UserRepositoryImplTest {
 
 
     @Test
-    fun `given user doesn't exist, when add user, then return user`() = runBlockingTest {
-        val mockUser =  transaction {
+    fun `given user doesn't exist, when add user, then return user`() = runTest {
+        val mockUser = transaction {
             User.new {
                 email = "email"
                 displayName = "displayName"
@@ -70,8 +65,8 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `given user already exists, when add user, then return null`() = runBlockingTest {
-        val mockUser =  transaction {
+    fun `given user already exists, when add user, then return null`() = runTest {
+        val mockUser = transaction {
             User.new {
                 email = "email"
                 displayName = "displayName"
