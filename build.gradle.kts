@@ -9,6 +9,7 @@ val mockk_version: String by project
 val koin_version: String by project
 val jbcrypt_version: String by project
 val h2_version: String by project
+val kotlin_coroutines_version: String by project
 
 plugins {
     application
@@ -36,8 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-//    testImplementation ("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
-//    testImplementation ("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
@@ -62,6 +62,6 @@ dependencies {
     // H2 for testing only
     testImplementation("com.h2database:h2:$h2_version")
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-RC")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_coroutines_version")
 
 }
