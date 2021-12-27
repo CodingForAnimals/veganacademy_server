@@ -32,10 +32,10 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         return newSuspendedTransaction {
             val request = PaginationRequest(pageSize, pageNumber)
             val recipes = source.getPaginatedRecipes(request)
-            recipes.forEach {
-                println(it.steps)
-            }
-            PaginationResponse(false, request.pageSize, request.pageNumber, recipes.toRecipeDtoList())
+            val lastRecipeIndex = pageSize * pageNumber
+            val nextRecipe = source.findRecipeByOffset(lastRecipeIndex.toLong())
+            val hasMoreContent = nextRecipe != null
+            PaginationResponse(hasMoreContent, request.pageSize, request.pageNumber, recipes.toRecipeDtoList())
         }
     }
 }

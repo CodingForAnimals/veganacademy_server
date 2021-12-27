@@ -12,8 +12,8 @@ object SchemaDefinition {
     fun createSchema() {
         transaction {
 
-            SchemaUtils.drop(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
-            SchemaUtils.create(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
+//            SchemaUtils.drop(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
+//            SchemaUtils.create(UserTable, RecipeTable, RecipeStepTable, RecipeIngredientTable)
         }
     }
 

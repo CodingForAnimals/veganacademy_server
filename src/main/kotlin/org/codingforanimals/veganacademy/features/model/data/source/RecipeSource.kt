@@ -13,4 +13,5 @@ interface RecipeSource {
     suspend fun addRecipeIngredients(newRecipe: Recipe, ingredients: List<RecipeIngredientDTO>)
     suspend fun addRecipeSteps(newRecipe: Recipe, steps: List<RecipeStepDTO>)
     suspend fun getPaginatedRecipes(request: PaginationRequest): List<Recipe>
+    suspend fun findRecipeByOffset(offset: Long): Recipe?
 }
