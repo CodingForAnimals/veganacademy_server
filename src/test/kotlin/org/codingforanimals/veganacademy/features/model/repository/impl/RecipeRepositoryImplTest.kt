@@ -24,22 +24,14 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.get
 
-
 @ExperimentalCoroutinesApi
 class RecipeRepositoryImplTest : KoinTest {
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(module {
-            single<RecipeRepository> { RecipeRepositoryImpl(recipeSource) }
-        })
-    }
 
     private lateinit var databaseFactory: DatabaseFactoryForUnitTest
 
     private val recipeSource: RecipeSource = mockk()
 
-    private lateinit var recipeRepository: RecipeRepository
+    private val recipeRepository = RecipeRepositoryImpl(recipeSource)
 
     lateinit var recipe: Recipe
 
@@ -68,7 +60,6 @@ class RecipeRepositoryImplTest : KoinTest {
     fun setup() {
         databaseFactory = DatabaseFactoryForUnitTest()
         databaseFactory.connect()
-        recipeRepository = get()
     }
 
     @After

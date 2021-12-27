@@ -19,7 +19,6 @@ import org.codingforanimals.veganacademy.features.model.repository.RecipeReposit
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.features.model.repository.impl.RecipeRepositoryImpl
 import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
-import org.codingforanimals.veganacademy.features.routes.user.JwtService
 import org.codingforanimals.veganacademy.run
 import org.koin.core.module.Module
 import org.koin.dsl.module

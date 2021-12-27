@@ -3,15 +3,20 @@ package org.codingforanimals.veganacademy.features.model.repository.impl
 import org.codingforanimals.veganacademy.features.model.dao.User
 import org.codingforanimals.veganacademy.features.model.data.source.UserSource
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
+import org.codingforanimals.veganacademy.utils.UserUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-class UserRepositoryImpl(private val source: UserSource) : UserRepository {
+class UserRepositoryImpl(
+    private val source: UserSource,
+    private val userUtils: UserUtils
+) : UserRepository {
 
-    override suspend fun addUser(email: String, displayName: String, passwordHash: String): User? {
+    override suspend fun addUser(email: String, displayName: String, password: String): User? {
         return newSuspendedTransaction {
+            val hashedPassword = userUtils.hashPassword(password)
             val user = source.findUserByEmail(email)
             return@newSuspendedTransaction if (user == null) {
-                source.createUser(email, displayName, passwordHash)
+                source.createUser(email, displayName, hashedPassword)
             } else {
                 null
             }
@@ -19,7 +24,7 @@ class UserRepositoryImpl(private val source: UserSource) : UserRepository {
     }
 
     override suspend fun findUserById(userId: Int): User? {
-        return source.getUserById(userId)
+        return newSuspendedTransaction { source.getUserById(userId) }
     }
 
     override suspend fun findUserByEmail(email: String): User? {

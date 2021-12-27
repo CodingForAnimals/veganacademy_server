@@ -9,12 +9,8 @@ import org.codingforanimals.veganacademy.features.routes.user.userRoutes
 
 @KtorExperimentalLocationsAPI
 fun Application.configureRoutes() {
-
     routing {
         userRoutes()
         recipeRoutes()
-        get("/") {
-            call.respondText("This is a sample ktor backend!")
-        }
     }
 }

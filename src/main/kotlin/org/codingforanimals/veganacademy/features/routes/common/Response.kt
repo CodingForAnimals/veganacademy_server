@@ -1,5 +1,10 @@
 package org.codingforanimals.veganacademy.features.routes.common
 
+import io.ktor.application.ApplicationCall
+import io.ktor.application.log
+import io.ktor.http.HttpStatusCode
+import io.ktor.response.respond
+
 class Response<T> private constructor(
     var success: Boolean,
     var message: String?,
@@ -7,7 +12,7 @@ class Response<T> private constructor(
 ){
 
     companion object {
-        fun <T> success(message: String, content: T): Response<T> {
+        fun <T> success(message: String, content: T? = null): Response<T> {
             return Response(
                 success = true,
                 message = message,
@@ -23,4 +28,8 @@ class Response<T> private constructor(
             )
         }
     }
+}
+
+suspend fun respondWithFailure(message: String, call: ApplicationCall, content: Any? = null) {
+    call.respond(HttpStatusCode.InternalServerError, Response.failure(message, content))
 }

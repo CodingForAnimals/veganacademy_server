@@ -14,7 +14,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @KtorExperimentalLocationsAPI
-internal class AuthenticateRouteTest : AutoCloseKoinTest() {
+internal class LoginRouteTest : AutoCloseKoinTest() {
 
     private val userBody = listOf(
         "email" to "email",

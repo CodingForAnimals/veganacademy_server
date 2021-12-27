@@ -10,11 +10,6 @@ fun Application.setupConfig() {
     val isProd = serverObject.property("isProd").getString().toBoolean()
     appConfig.serverConfig = ServerConfig(isProd)
 
-    val jwtObject = environment.config.config("ktor.jwt")
-    val issuer = jwtObject.property("issuer").getString()
-    val secret = jwtObject.property("secret").getString()
-    appConfig.jwtConfig = JwtConfig(issuer, secret)
-
     val databaseObject = environment.config.config("ktor.database")
     val jdbcDriver = databaseObject.property("jdbcDriver").getString()
     val jdbcDatabaseUrl = databaseObject.property("jdbcDatabaseUrl").getString()
@@ -26,17 +21,11 @@ fun Application.setupConfig() {
 
 class AppConfig {
     lateinit var serverConfig: ServerConfig
-    lateinit var jwtConfig: JwtConfig
     lateinit var databaseConfig: DatabaseConfig
 }
 
 data class ServerConfig(
-    val isProd: Boolean
-)
-
-data class JwtConfig(
-    val issuer: String,
-    val secret: String
+    val isProd: Boolean,
 )
 
 data class DatabaseConfig(
@@ -44,5 +33,5 @@ data class DatabaseConfig(
     val jdbcDatabaseUrl: String,
     val dbUser: String,
     val dbPassword: String,
-    val maxPoolSize: Int
+    val maxPoolSize: Int,
 )

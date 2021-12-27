@@ -26,16 +26,24 @@ repositories {
     mavenCentral()
 }
 
+
+
 dependencies {
+
+    // Ktor
     implementation("io.ktor:ktor-server-core:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
-
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-gson:$ktor_version")
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
-    implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
+    implementation("io.ktor:ktor-auth:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-serialization:$ktor_version")
+
+    // Logger
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
     // Koin
@@ -62,6 +70,7 @@ dependencies {
     // H2 for testing only
     testImplementation("com.h2database:h2:$h2_version")
 
+    // Coroutines for testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_coroutines_version")
 
 }
