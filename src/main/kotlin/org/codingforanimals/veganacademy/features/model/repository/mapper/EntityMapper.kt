@@ -17,7 +17,8 @@ fun Recipe.toDto() = RecipeDTO(
     categoriesId = categoriesId,
     steps = steps.map { it.toDto() },
     ingredients = ingredients.map { it.toDto() },
-    likes = likes
+    likes = likes,
+    isAccepted = isAccepted,
 )
 
 fun List<Recipe>.toRecipeDtoList() = map { it.toDto() }

@@ -28,14 +28,22 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         }
     }
 
-    override suspend fun getPaginatedRecipes(pageSize: Int, pageNumber: Int): PaginationResponse<RecipeDTO> {
+    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest): PaginationResponse<RecipeDTO> {
         return newSuspendedTransaction {
-            val request = PaginationRequest(pageSize, pageNumber)
-            val recipes = source.getPaginatedRecipes(request)
-            val lastRecipeIndex = pageSize * pageNumber
-            val nextRecipe = source.findRecipeByOffset(lastRecipeIndex.toLong())
-            val hasMoreContent = nextRecipe != null
-            PaginationResponse(hasMoreContent, request.pageSize, request.pageNumber, recipes.toRecipeDtoList())
+            var recipes = source.getPaginatedRecipes(paginationRequest)
+
+            val hasMoreContent = recipes.size == paginationRequest.pageSize + 1
+            if (hasMoreContent) recipes = recipes.dropLast(1)
+
+            val recipesDTO = recipes.toRecipeDtoList()
+            PaginationResponse(hasMoreContent, paginationRequest.pageSize, paginationRequest.pageNumber, recipesDTO)
+        }
+    }
+
+    override suspend fun acceptRecipeById(id: Int): RecipeDTO? {
+        return newSuspendedTransaction {
+            val recipe = source.acceptRecipeById(id)
+            recipe?.toDto()
         }
     }
 }

@@ -3,11 +3,13 @@ package org.codingforanimals.veganacademy.features.model.data.source.impl
 import org.codingforanimals.veganacademy.features.model.dao.Recipe
 import org.codingforanimals.veganacademy.features.model.dao.RecipeIngredient
 import org.codingforanimals.veganacademy.features.model.dao.RecipeStep
+import org.codingforanimals.veganacademy.features.model.dao.RecipeTable
 import org.codingforanimals.veganacademy.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.features.routes.common.PaginationRequest
+import org.jetbrains.exposed.sql.update
 
 class RecipeSourceImpl : RecipeSource {
 
@@ -22,6 +24,7 @@ class RecipeSourceImpl : RecipeSource {
                 description = recipeDTO.description
                 categoriesId = recipeDTO.categoriesId
                 likes = recipeDTO.likes
+                isAccepted = recipeDTO.isAccepted
             }
         } catch (e: Throwable) {
             null
@@ -62,11 +65,17 @@ class RecipeSourceImpl : RecipeSource {
         val pageNumber = request.pageNumber
         val pageSize = request.pageSize
         val offset = ((pageNumber - 1) * pageSize).toLong()
-        val rows = Recipe.all().limit(pageSize, offset = offset)
-        return rows.toList()
+        val recipes = Recipe.find { RecipeTable.isAccepted eq request.getAccepted }.limit(pageSize + 1, offset = offset)
+        return recipes.toList()
     }
 
     override suspend fun findRecipeByOffset(offset: Long): Recipe? {
         return Recipe.all().limit(1, offset).firstOrNull()
+    }
+
+    override suspend fun acceptRecipeById(id: Int): Recipe? {
+        RecipeTable.update({ RecipeTable.id eq id }) { it[isAccepted] = true }
+        val recipe = findRecipeById(id)
+        return recipe.takeIf { it?.isAccepted == true }
     }
 }

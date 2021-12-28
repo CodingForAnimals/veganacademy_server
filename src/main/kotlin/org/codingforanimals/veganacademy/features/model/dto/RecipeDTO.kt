@@ -8,6 +8,7 @@ data class RecipeDTO(
     var steps: List<RecipeStepDTO>,
     var ingredients: List<RecipeIngredientDTO>,
     var likes: Int,
+    var isAccepted: Boolean = false,
 )
 
 data class RecipeStepDTO(

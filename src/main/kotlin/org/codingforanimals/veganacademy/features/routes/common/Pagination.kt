@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class PaginationRequest(
     @SerializedName("page_size") val pageSize: Int,
     @SerializedName("page_number") val pageNumber: Int,
+    @SerializedName("get_accepted") val getAccepted: Boolean,
 )
 
 data class PaginationResponse<T>(

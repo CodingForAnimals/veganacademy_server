@@ -7,6 +7,7 @@ import io.ktor.application.log
 import io.ktor.auth.authenticate
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
+import io.ktor.locations.get
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -27,10 +28,13 @@ import org.koin.ktor.ext.inject
 class RecipeRoutes {
 
     @Location("/paginated")
-    class Paginated(val parent: RecipeRoutes)
+    data class Paginated(val parent: RecipeRoutes)
 
     @Location("/submit")
-    class Submit(val parent: RecipeRoutes)
+    data class Submit(val parent: RecipeRoutes)
+
+    @Location("/accept/{recipeId}")
+    data class Accept(val recipeId: Int, val parent: RecipeRoutes)
 
 }
 
@@ -46,6 +50,12 @@ fun Route.recipeRoutes() {
                 val requestRaw = call.receive<String>()
                 val request = gson.fromJson<Request<RecipeDTO>>(requestRaw, requestType)
                 val newRecipe = recipeRepository.submitRecipe(request.content)
+//                val max = 10000
+//                var curr = 0
+//                while (curr < max) {
+//                    curr++
+//                    newRecipe = recipeRepository.submitRecipe(request.content)
+//                }
                 check(newRecipe != null) { "Recipe submission failed" }
 
                 call.respond(Response.success("Recipe submitted successfully", newRecipe))
@@ -61,9 +71,7 @@ fun Route.recipeRoutes() {
                 val requestType = genericType<Request<PaginationRequest>>()
                 val requestRaw = call.receive<String>()
                 val request = gson.fromJson<Request<PaginationRequest>>(requestRaw, requestType)
-                val pageSize = request.content.pageSize
-                val pageNumber = request.content.pageNumber
-                val recipesResponse = recipeRepository.getPaginatedRecipes(pageSize, pageNumber)
+                val recipesResponse = recipeRepository.getPaginatedRecipes(request.content)
                 call.respond(Response.success("Get recipes success", recipesResponse))
             } catch (e: Throwable) {
                 application.log.error(e.stackTraceToString())
@@ -71,6 +79,18 @@ fun Route.recipeRoutes() {
 
             }
         }
+
+        get<RecipeRoutes.Accept> { params ->
+            try {
+                val acceptedRecipe = recipeRepository.acceptRecipeById(params.recipeId)
+                    ?: return@get respondWithFailure("Unexpected error when accepting recipe", call)
+                call.respond(Response.success("Recipe accepted successfully", acceptedRecipe))
+            } catch (e: Throwable) {
+                application.log.error(e.stackTraceToString())
+                respondWithFailure("Unexpected error when accepting recipe", call)
+            }
+        }
     }
+
 
 }

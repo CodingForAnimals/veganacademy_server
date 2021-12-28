@@ -10,6 +10,7 @@ object RecipeTable : IntIdTable() {
     val description = varchar("description", 256)
     val categoriesId = varchar("categories_id", 16)
     val likes = integer("likes")
+    val isAccepted = bool("is_accepted")
 }
 
 class Recipe(id: EntityID<Int>) : IntEntity(id) {
@@ -21,6 +22,7 @@ class Recipe(id: EntityID<Int>) : IntEntity(id) {
     val steps by RecipeStep referrersOn RecipeStepTable.recipe
     val ingredients by RecipeIngredient optionalReferrersOn RecipeIngredientTable.recipe
     var likes by RecipeTable.likes
+    var isAccepted by RecipeTable.isAccepted
 }
 
 object RecipeStepTable : IntIdTable() {
