@@ -2,24 +2,28 @@ package testutils
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.ktor.config.*
-import io.ktor.http.*
-import io.ktor.locations.*
-import io.ktor.server.testing.*
-import org.codingforanimals.veganacademy.config.plugins.AppConfig
-import org.codingforanimals.veganacademy.config.plugins.DatabaseConfig
-import org.codingforanimals.veganacademy.config.plugins.ServerConfig
-import org.codingforanimals.veganacademy.database.DatabaseFactory
-import org.codingforanimals.veganacademy.database.DatabaseFactoryForServerTest
-import org.codingforanimals.veganacademy.features.model.data.source.RecipeSource
-import org.codingforanimals.veganacademy.features.model.data.source.UserSource
-import org.codingforanimals.veganacademy.features.model.data.source.impl.RecipeSourceImpl
-import org.codingforanimals.veganacademy.features.model.data.source.impl.UserSourceImpl
-import org.codingforanimals.veganacademy.features.model.repository.RecipeRepository
-import org.codingforanimals.veganacademy.features.model.repository.UserRepository
-import org.codingforanimals.veganacademy.features.model.repository.impl.RecipeRepositoryImpl
-import org.codingforanimals.veganacademy.features.model.repository.impl.UserRepositoryImpl
-import org.codingforanimals.veganacademy.run
+import io.ktor.config.MapApplicationConfig
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.TestApplicationRequest
+import io.ktor.server.testing.withTestApplication
+import org.codingforanimals.veganacademy.server.config.plugins.AppConfig
+import org.codingforanimals.veganacademy.server.config.plugins.DatabaseConfig
+import org.codingforanimals.veganacademy.server.config.plugins.ServerConfig
+import org.codingforanimals.veganacademy.server.database.DatabaseFactory
+import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForServerTest
+import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
+import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
+import org.codingforanimals.veganacademy.server.features.model.data.source.impl.RecipeSourceImpl
+import org.codingforanimals.veganacademy.server.features.model.data.source.impl.UserSourceImpl
+import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
+import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
+import org.codingforanimals.veganacademy.server.features.model.repository.impl.RecipeRepositoryImpl
+import org.codingforanimals.veganacademy.server.features.model.repository.impl.UserRepositoryImpl
+import org.codingforanimals.veganacademy.server.run
+import org.codingforanimals.veganacademy.server.utils.UserUtils
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -62,7 +66,7 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
             (environment.config as MapApplicationConfig).apply {
                 createConfigForTesting()
             }
-            run(testing = true, koinModules = koinModules)
+            run(isProd = false, koinModules = koinModules)
         }, block
     )
 }
@@ -75,11 +79,12 @@ fun setContentTypeText(request: TestApplicationRequest) =
 
 val appTestModule = module {
     single { getAppConfigForUnitTest() }
-    single { JwtService(get()) }
     single<DatabaseFactory> { DatabaseFactoryForServerTest(get()) }
 
+    single { UserUtils() }
+
     single<UserSource> { UserSourceImpl() }
-    single<UserRepository> { UserRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     single<RecipeSource> { RecipeSourceImpl() }
     single<RecipeRepository> { RecipeRepositoryImpl(get()) }
