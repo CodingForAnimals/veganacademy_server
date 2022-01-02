@@ -13,16 +13,11 @@ import org.codingforanimals.veganacademy.features.model.dto.BaseRecipeIngredient
 import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
-import org.codingforanimals.veganacademy.features.model.repository.RecipeRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.KoinTestRule
-import org.koin.test.get
 
 @ExperimentalCoroutinesApi
 class RecipeRepositoryImplTest : KoinTest {
@@ -36,9 +31,9 @@ class RecipeRepositoryImplTest : KoinTest {
     lateinit var recipe: Recipe
 
     private val recipeDTO = RecipeDTO(
-        name = "recipe title",
+        title = "recipe title",
         description = "recipe description",
-        categoriesId = "cat1, cat2",
+        categories = "cat1, cat2",
         steps = listOf(RecipeStepDTO(number = 0, description = "cooking step description")),
         ingredients = listOf(
             RecipeIngredientDTO(
@@ -71,7 +66,7 @@ class RecipeRepositoryImplTest : KoinTest {
     fun `given error, when submit recipe, don't delegate to source`() = runTest {
         every { recipeSource.addRecipe(any()) } returns null
 
-        recipeRepository.submitRecipe(recipeDTO)
+        recipeRepository.addRecipe(recipeDTO)
 
         verify(exactly = 0) {
             recipeSource.addRecipeIngredients(any(), any())
@@ -84,7 +79,7 @@ class RecipeRepositoryImplTest : KoinTest {
     fun `given success, when submit recipe, delegate to source`() = runTest {
         transaction {
             recipe = Recipe.new {
-                name = "test recipe"
+                title = "test recipe"
                 description = "test description"
                 categoriesId = "test categories"
                 likes = 0
@@ -95,7 +90,7 @@ class RecipeRepositoryImplTest : KoinTest {
         justRun { recipeSource.addRecipeSteps(any(), any()) }
         every { recipeSource.findRecipeById(any()) } returns recipe
 
-        recipeRepository.submitRecipe(recipeDTO)
+        recipeRepository.addRecipe(recipeDTO)
 
         verify {
             recipeSource.addRecipe(any())

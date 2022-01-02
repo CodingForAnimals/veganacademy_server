@@ -7,20 +7,11 @@ import org.codingforanimals.veganacademy.features.model.repository.mapper.toDto
 import org.codingforanimals.veganacademy.features.model.repository.mapper.toRecipeDtoList
 import org.codingforanimals.veganacademy.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.features.routes.common.PaginationResponse
+import org.codingforanimals.veganacademy.features.routes.recipes.RecipePaginationRequestFilter
+import org.codingforanimals.veganacademy.features.routes.recipes.RecipePaginationResponseResult
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository {
-
-    override suspend fun submitRecipe(recipeDTO: RecipeDTO): RecipeDTO? {
-        return newSuspendedTransaction {
-            val newRecipe = source.addRecipe(recipeDTO)
-            newRecipe.takeIf { it != null }?.let {
-                source.addRecipeIngredients(it, recipeDTO.ingredients)
-                source.addRecipeSteps(it, recipeDTO.steps)
-                source.findRecipeById(it.id.value)?.toDto()
-            }
-        }
-    }
 
     override suspend fun findRecipeById(id: Int): RecipeDTO? {
         return newSuspendedTransaction {
@@ -28,15 +19,38 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         }
     }
 
-    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest): PaginationResponse<RecipeDTO> {
+    override suspend fun addRecipe(recipeDTO: RecipeDTO): RecipeDTO? {
         return newSuspendedTransaction {
-            var recipes = source.getPaginatedRecipes(paginationRequest)
+            val newRecipeId = source.addRecipe(recipeDTO)
+            val newRecipe = newRecipeId!!.let { source.findRecipeById(it) }
+            newRecipe?.toDto()
+        }
+    }
 
-            val hasMoreContent = recipes.size == paginationRequest.pageSize + 1
-            if (hasMoreContent) recipes = recipes.dropLast(1)
+    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipePaginationRequestFilter>): PaginationResponse<RecipePaginationResponseResult> {
+        return newSuspendedTransaction {
+            var recipesDTO =
+                source.getPaginatedRecipes(
+                    paginationRequest.pageSize,
+                    paginationRequest.pageNumber,
+                    paginationRequest.filter,
+                    this,
+                ).toRecipeDtoList()
 
-            val recipesDTO = recipes.toRecipeDtoList()
-            PaginationResponse(hasMoreContent, paginationRequest.pageSize, paginationRequest.pageNumber, recipesDTO)
+            val hasMoreContent = recipesDTO.size == paginationRequest.pageSize + 1
+            if (hasMoreContent) recipesDTO = recipesDTO.dropLast(1)
+
+            val result = RecipePaginationResponseResult(
+                getAcceptedRecipes = paginationRequest.filter.getAcceptedRecipes,
+                recipes = recipesDTO
+            )
+            PaginationResponse(
+                hasMoreContent = hasMoreContent,
+                resultSize = recipesDTO.size,
+                pageSize = paginationRequest.pageSize,
+                pageNumber = paginationRequest.pageNumber,
+                result = result
+            )
         }
     }
 

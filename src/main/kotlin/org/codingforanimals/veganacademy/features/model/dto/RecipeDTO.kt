@@ -2,11 +2,12 @@ package org.codingforanimals.veganacademy.features.model.dto
 
 data class RecipeDTO(
     var id: Int? = null,
-    var name: String,
+    var title: String,
     var description: String,
-    var categoriesId: String,
+    var categories: List<String>,
     var steps: List<RecipeStepDTO>,
     var ingredients: List<RecipeIngredientDTO>,
+    var ingredientsCount: Int? = null,
     var likes: Int,
     var isAccepted: Boolean = false,
 )

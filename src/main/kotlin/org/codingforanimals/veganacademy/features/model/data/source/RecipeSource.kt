@@ -2,17 +2,21 @@ package org.codingforanimals.veganacademy.features.model.data.source
 
 import org.codingforanimals.veganacademy.features.model.dao.Recipe
 import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.features.model.dto.RecipeIngredientDTO
-import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
-import org.codingforanimals.veganacademy.features.routes.common.PaginationRequest
-import org.codingforanimals.veganacademy.features.routes.common.PaginationResponse
+import org.codingforanimals.veganacademy.features.routes.recipes.RecipePaginationRequestFilter
+import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.Transaction
 
 interface RecipeSource {
     suspend fun findRecipeById(id: Int): Recipe?
-    suspend fun addRecipe(recipeDTO: RecipeDTO): Recipe?
-    suspend fun addRecipeIngredients(newRecipe: Recipe, ingredients: List<RecipeIngredientDTO>)
-    suspend fun addRecipeSteps(newRecipe: Recipe, steps: List<RecipeStepDTO>)
-    suspend fun getPaginatedRecipes(request: PaginationRequest): List<Recipe>
+    suspend fun addRecipe(recipeDTO: RecipeDTO): Int?
     suspend fun findRecipeByOffset(offset: Long): Recipe?
     suspend fun acceptRecipeById(id: Int): Recipe?
+    suspend fun getPaginatedRecipes(
+        pageSize: Int,
+        pageNumber: Int,
+        filter: RecipePaginationRequestFilter,
+        transaction: Transaction,
+    ): SizedIterable<Recipe>
+
+    fun getRecipesById(ids: List<Int>): SizedIterable<Recipe>
 }

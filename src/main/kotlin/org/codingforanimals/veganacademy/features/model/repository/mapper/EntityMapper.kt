@@ -1,5 +1,6 @@
 package org.codingforanimals.veganacademy.features.model.repository.mapper
 
+import org.codingforanimals.veganacademy.features.model.dao.FoodCategory
 import org.codingforanimals.veganacademy.features.model.dao.Recipe
 import org.codingforanimals.veganacademy.features.model.dao.RecipeIngredient
 import org.codingforanimals.veganacademy.features.model.dao.RecipeStep
@@ -9,19 +10,20 @@ import org.codingforanimals.veganacademy.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.features.model.dto.UserDTO
+import org.jetbrains.exposed.sql.SizedIterable
 
 fun Recipe.toDto() = RecipeDTO(
     id = id.value,
-    name = name,
+    title = title,
     description = description,
-    categoriesId = categoriesId,
-    steps = steps.map { it.toDto() },
-    ingredients = ingredients.map { it.toDto() },
+    categories = categories.toRecipeCategories(),
+    steps = steps.toRecipeStepsDTO(),
+    ingredients = ingredients.toRecipeIngredientsDTO(),
     likes = likes,
     isAccepted = isAccepted,
 )
 
-fun List<Recipe>.toRecipeDtoList() = map { it.toDto() }
+fun SizedIterable<Recipe>.toRecipeDtoList() = map { it.toDto() }
 
 fun RecipeStep.toDto() = RecipeStepDTO(
     id = id.value,
@@ -50,4 +52,10 @@ fun User.toDto() = UserDTO(
     displayName = displayName
 )
 
-fun List<User?>.toUserDtoList() = map { it?.toDto() }
+fun SizedIterable<RecipeStep>.toRecipeStepsDTO(): List<RecipeStepDTO> = map { it.toDto() }
+
+fun SizedIterable<RecipeIngredient>.toRecipeIngredientsDTO(): List<RecipeIngredientDTO> = map { it.toDto() }
+
+fun SizedIterable<User?>.toUsersDTO(): List<UserDTO?> = map { it?.toDto() }
+
+fun SizedIterable<FoodCategory>.toRecipeCategories(): List<String> = map { it.category }

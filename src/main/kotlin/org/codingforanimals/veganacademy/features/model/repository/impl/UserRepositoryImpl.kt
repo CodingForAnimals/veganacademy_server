@@ -2,7 +2,9 @@ package org.codingforanimals.veganacademy.features.model.repository.impl
 
 import org.codingforanimals.veganacademy.features.model.dao.User
 import org.codingforanimals.veganacademy.features.model.data.source.UserSource
+import org.codingforanimals.veganacademy.features.model.dto.UserDTO
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
+import org.codingforanimals.veganacademy.features.model.repository.mapper.toUsersDTO
 import org.codingforanimals.veganacademy.utils.UserUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
@@ -31,8 +33,8 @@ class UserRepositoryImpl(
         return newSuspendedTransaction { source.findUserByEmail(email) }
     }
 
-    override suspend fun findAllUsers(): List<User?> {
-        return newSuspendedTransaction { source.getAllUsers() }
+    override suspend fun findAllUsers(): List<UserDTO?> {
+        return newSuspendedTransaction { source.getAllUsers() }.toUsersDTO()
     }
 
     override suspend fun deleteAll(): Boolean {

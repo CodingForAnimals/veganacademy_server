@@ -2,15 +2,16 @@ package org.codingforanimals.veganacademy.features.routes.common
 
 import com.google.gson.annotations.SerializedName
 
-data class PaginationRequest(
+data class PaginationRequest<T>(
     @SerializedName("page_size") val pageSize: Int,
     @SerializedName("page_number") val pageNumber: Int,
-    @SerializedName("get_accepted") val getAccepted: Boolean,
+    val filter: T,
 )
 
 data class PaginationResponse<T>(
     @SerializedName("has_more_content") val hasMoreContent: Boolean,
+    @SerializedName("result_size") val resultSize: Int?,
     @SerializedName("page_size") val pageSize: Int,
     @SerializedName("page_number") val pageNumber: Int,
-    val content: List<T>
+    val result: T
 )

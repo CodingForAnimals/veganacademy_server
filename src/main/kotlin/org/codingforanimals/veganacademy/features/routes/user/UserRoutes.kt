@@ -20,7 +20,6 @@ import org.codingforanimals.veganacademy.config.plugins.AUTH_SESSION
 import org.codingforanimals.veganacademy.config.plugins.UserSession
 import org.codingforanimals.veganacademy.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.features.model.repository.mapper.toDto
-import org.codingforanimals.veganacademy.features.model.repository.mapper.toUserDtoList
 import org.codingforanimals.veganacademy.features.routes.common.Response
 import org.codingforanimals.veganacademy.features.routes.common.respondWithFailure
 import org.codingforanimals.veganacademy.utils.UserUtils
@@ -36,7 +35,7 @@ fun Route.userRoutes() {
         get<UserLocations.GetAll> {
             try {
                 val users = userRepository.findAllUsers()
-                call.respond(Response.success("List of users fetched successfully", users.toUserDtoList()))
+                call.respond(Response.success("List of users fetched successfully", users))
             } catch (e: Throwable) {
                 application.log.error("Failed to get all users", e)
                 call.respond(HttpStatusCode.BadRequest, "Error getting users")

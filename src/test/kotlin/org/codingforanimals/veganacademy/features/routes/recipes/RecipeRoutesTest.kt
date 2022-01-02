@@ -21,9 +21,9 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
 
     private val recipeJSON = gson.toJson(
         RecipeDTO(
-            name = "recipe title",
+            title = "recipe title",
             description = "recipe description",
-            categoriesId = "cat1, cat2",
+            categories = "cat1, cat2",
             steps = listOf(RecipeStepDTO(number = 0, description = "cooking step description")),
             ingredients = listOf(
                 RecipeIngredientDTO(
@@ -43,7 +43,7 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
 
     @Test
     fun `given recipe request, when submitting, then return success`() = withTestServer {
-        handleRequest(HttpMethod.Post, application.locations.href(RecipeRoutes.Submit(RecipeRoutes()))) {
+        handleRequest(HttpMethod.Post, application.locations.href(RecipeRoutes.Suggest(RecipeRoutes()))) {
             setContentTypeText(this)
             setBody(buildRequestBody(recipeJSON))
         }.apply {

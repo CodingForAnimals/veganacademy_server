@@ -30,8 +30,8 @@ class RecipeRoutes {
     @Location("/paginated")
     data class Paginated(val parent: RecipeRoutes)
 
-    @Location("/submit")
-    data class Submit(val parent: RecipeRoutes)
+    @Location("/suggest")
+    data class Suggest(val parent: RecipeRoutes)
 
     @Location("/accept/{recipeId}")
     data class Accept(val recipeId: Int, val parent: RecipeRoutes)
@@ -44,22 +44,19 @@ fun Route.recipeRoutes() {
     val recipeRepository by inject<RecipeRepository>()
 
     authenticate(AUTH_SESSION) {
-        post<RecipeRoutes.Submit> {
+        post<RecipeRoutes.Suggest> {
             try {
                 val requestType = genericType<Request<RecipeDTO>>()
                 val requestRaw = call.receive<String>()
                 val request = gson.fromJson<Request<RecipeDTO>>(requestRaw, requestType)
-                val newRecipe = recipeRepository.submitRecipe(request.content)
+                val newRecipe = recipeRepository.addRecipe(request.content)
 //                val max = 10000
 //                var curr = 0
 //                while (curr < max) {
 //                    curr++
 //                    newRecipe = recipeRepository.submitRecipe(request.content)
 //                }
-                check(newRecipe != null) { "Recipe submission failed" }
-
                 call.respond(Response.success("Recipe submitted successfully", newRecipe))
-
             } catch (e: Throwable) {
                 application.log.error(e.stackTraceToString())
                 respondWithFailure("Recipe submission failed", call)
@@ -68,9 +65,9 @@ fun Route.recipeRoutes() {
 
         post<RecipeRoutes.Paginated> {
             try {
-                val requestType = genericType<Request<PaginationRequest>>()
+                val requestType = genericType<Request<PaginationRequest<RecipePaginationRequestFilter>>>()
                 val requestRaw = call.receive<String>()
-                val request = gson.fromJson<Request<PaginationRequest>>(requestRaw, requestType)
+                val request = gson.fromJson<Request<PaginationRequest<RecipePaginationRequestFilter>>>(requestRaw, requestType)
                 val recipesResponse = recipeRepository.getPaginatedRecipes(request.content)
                 call.respond(Response.success("Get recipes success", recipesResponse))
             } catch (e: Throwable) {
