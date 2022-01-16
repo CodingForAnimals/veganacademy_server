@@ -1,11 +1,9 @@
-package org.codingforanimals.veganacademy.server.features.model.dao
+package org.codingforanimals.veganacademy.server.features.model.data.dao
 
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Column
 
 object UserTable: IntIdTable() {
     val email = varchar("email", 128).uniqueIndex()

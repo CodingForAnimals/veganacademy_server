@@ -1,74 +1,62 @@
 package org.codingforanimals.veganacademy.server.database
 
-import org.codingforanimals.veganacademy.server.features.model.dao.FoodCategory
-import org.codingforanimals.veganacademy.server.features.model.dao.FoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeFoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeIngredientTable
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeStepTable
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeTable
-import org.codingforanimals.veganacademy.server.features.model.dao.UserTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
+import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategoryTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.LoggedInUserTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeFoodCategoryTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredientTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStepTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.UserTable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object SchemaDefinition {
 
+    private val tables = listOf(
+        UserTable,
+        LoggedInUserTable,
+        RecipeTable,
+        RecipeStepTable,
+        RecipeIngredientTable,
+        FoodCategoryTable,
+        RecipeFoodCategoryTable,
+    ).toTypedArray()
+
+    private val foodCategories = listOf(
+        "BREAKFAST",
+        "STARTER",
+        "MAIN_DISH",
+        "DESSERT",
+        "SALAD",
+        "SOUP",
+        "APPETIZER",
+        "SNACK",
+        "DRINK",
+        "SMOOTHIE",
+        "GLUTEN_FREE",
+    )
+
     fun createSchema() {
         transaction {
-//            recreate()
+            recreate()
         }
     }
 
     private fun recreate() {
-        SchemaUtils.drop(
-            UserTable,
-            RecipeTable,
-            RecipeStepTable,
-            RecipeIngredientTable,
-            FoodCategoryTable,
-            RecipeFoodCategoryTable
-        )
-        SchemaUtils.create(
-            UserTable,
-            RecipeTable,
-            RecipeStepTable,
-            RecipeIngredientTable,
-            FoodCategoryTable,
-            RecipeFoodCategoryTable
-        )
-
-        FoodCategory.new {
-            category = "BREAKFAST"
-        }
-        FoodCategory.new {
-            category = "STARTER"
-        }
-        FoodCategory.new {
-            category = "MAIN_DISH"
-        }
-        FoodCategory.new {
-            category = "DESSERT"
-        }
-        FoodCategory.new {
-            category = "SALAD"
-        }
-        FoodCategory.new {
-            category = "SOUP"
-        }
-        FoodCategory.new {
-            category = "APPETIZER"
-        }
-        FoodCategory.new {
-            category = "SNACK"
-        }
-        FoodCategory.new {
-            category = "DRINK"
-        }
-        FoodCategory.new {
-            category = "SMOOTHIE"
-        }
-        FoodCategory.new {
-            category = "GLUTEN_FREE"
-        }
+        recreateTables()
+        recreateFoodCategories()
     }
 
+    private fun recreateTables() {
+        SchemaUtils.drop(*tables)
+        SchemaUtils.create(*tables)
+    }
+
+    private fun recreateFoodCategories() =
+        foodCategories.forEach {
+            FoodCategory.new {
+                this.category = it
+            }
+        }
 }

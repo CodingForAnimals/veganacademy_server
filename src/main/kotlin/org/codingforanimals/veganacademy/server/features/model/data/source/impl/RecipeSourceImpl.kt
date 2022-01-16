@@ -1,12 +1,12 @@
 package org.codingforanimals.veganacademy.server.features.model.data.source.impl
 
-import org.codingforanimals.veganacademy.server.features.model.dao.FoodCategory
-import org.codingforanimals.veganacademy.server.features.model.dao.FoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.dao.Recipe
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeFoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeIngredient
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeStep
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
+import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategoryTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeFoodCategoryTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredient
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTable
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
@@ -66,10 +66,18 @@ class RecipeSourceImpl : RecipeSource {
         filter: RecipePaginationRequestFilter,
     ): SizedIterable<Recipe> {
         val ingList = filter.ingredients.joinToString("','", "('", "')")
-        val offset = ((pageNumber - 1) * pageSize)
         val limit = pageSize + 1
+        val offset = ((pageNumber - 1) * pageSize)
+        val categoryId = findCategoryByName(filter.category)?.id?.value
         val query =
-            "SELECT r.id FROM recipe as r INNER JOIN recipeingredient as ri on ri.recipe = r.id WHERE ri.name IN $ingList GROUP BY r.id HAVING COUNT(*) = ${filter.ingredients.size} LIMIT $limit OFFSET $offset"
+            buildIngredientsPaginatedQuery(
+                ingList,
+                filter.getAcceptedRecipes,
+                filter.ingredients.size,
+                limit,
+                offset,
+                categoryId
+            )
         val ids = mutableListOf<Int>()
         transaction.exec(query) { rows ->
             while (rows.next()) {
@@ -88,10 +96,8 @@ class RecipeSourceImpl : RecipeSource {
         return Recipe.all().limit(1, offset).firstOrNull()
     }
 
-    override suspend fun acceptRecipeById(id: Int): Recipe? {
-        RecipeTable.update({ RecipeTable.id eq id }) { it[isAccepted] = true }
-        val recipe = findRecipeById(id)
-        return recipe.takeIf { it?.isAccepted == true }
+    override suspend fun acceptRecipeById(id: Int): Boolean {
+        return RecipeTable.update({ RecipeTable.id eq id }) { it[isAccepted] = true } > 0
     }
 
     private fun createQueryWithFilter(filter: RecipePaginationRequestFilter): Query {
@@ -116,10 +122,10 @@ class RecipeSourceImpl : RecipeSource {
     private fun createRecipe(recipeDTO: RecipeDTO): Recipe? {
         return try {
             Recipe.new {
-                title = recipeDTO.title
-                description = recipeDTO.description
-                likes = recipeDTO.likes
-                isAccepted = recipeDTO.isAccepted
+                this.title = recipeDTO.title
+                this.description = recipeDTO.description
+                this.likes = recipeDTO.likes
+                this.isAccepted = recipeDTO.isAccepted
             }
         } catch (e: Throwable) {
             null
@@ -135,17 +141,17 @@ class RecipeSourceImpl : RecipeSource {
             var ingredientReplacement: RecipeIngredient? = null
             ingredient.replacement?.let { replacement ->
                 ingredientReplacement = RecipeIngredient.new {
-                    name = replacement.name
-                    quantity = replacement.quantity
-                    measurementUnit = replacement.measurementUnit
+                    this.name = replacement.name
+                    this.quantity = replacement.quantity
+                    this.measurementUnit = replacement.measurementUnit
                 }
             }
             RecipeIngredient.new {
-                recipe = newRecipe
-                name = ingredient.name
-                quantity = ingredient.quantity
-                measurementUnit = ingredient.measurementUnit
-                replacement = ingredientReplacement
+                this.recipe = newRecipe
+                this.name = ingredient.name
+                this.quantity = ingredient.quantity
+                this.measurementUnit = ingredient.measurementUnit
+                this.replacement = ingredientReplacement
             }
         }
     }
@@ -153,9 +159,9 @@ class RecipeSourceImpl : RecipeSource {
     private fun addRecipeSteps(newRecipe: Recipe, steps: List<RecipeStepDTO>) {
         steps.forEach {
             RecipeStep.new {
-                recipe = newRecipe
-                number = it.number.toShort()
-                description = it.description
+                this.recipe = newRecipe
+                this.number = it.number.toShort()
+                this.description = it.description
             }
         }
     }
@@ -178,5 +184,32 @@ class RecipeSourceImpl : RecipeSource {
             "TITLE" -> RecipeTable.title to order
             else -> RecipeTable.likes to order
         }
+    }
+}
+
+private fun buildIngredientsPaginatedQuery(
+    ingredientsList: String,
+    getAccepted: Boolean,
+    ingredientsListSize: Int,
+    limit: Int,
+    offset: Int,
+    categoryId: Int?,
+): String {
+    return if (categoryId != null) {
+        "SELECT r.id FROM recipe as r " +
+                "INNER JOIN recipeingredient as ri on ri.recipe = r.id " +
+                "INNER JOIN recipefoodcategory as rfc on rfc.recipe = r.id " +
+                "WHERE ri.name IN $ingredientsList " +
+                "AND rfc.category = $categoryId " +
+                "AND r.is_accepted = $getAccepted " +
+                "GROUP BY r.id HAVING COUNT(*) = $ingredientsListSize " +
+                "LIMIT $limit OFFSET $offset"
+    } else {
+        "SELECT r.id FROM recipe as r " +
+                "INNER JOIN recipeingredient as ri on ri.recipe = r.id " +
+                "WHERE ri.name IN $ingredientsList " +
+                "AND r.is_accepted = $getAccepted " +
+                "GROUP BY r.id HAVING COUNT(*) = $ingredientsListSize " +
+                "LIMIT $limit OFFSET $offset"
     }
 }

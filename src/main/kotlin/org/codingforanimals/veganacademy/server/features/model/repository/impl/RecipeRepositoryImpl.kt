@@ -2,9 +2,9 @@ package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.mapper.toDto
+import org.codingforanimals.veganacademy.server.features.model.mapper.toRecipeDtoList
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
-import org.codingforanimals.veganacademy.server.features.model.repository.mapper.toDto
-import org.codingforanimals.veganacademy.server.features.model.repository.mapper.toRecipeDtoList
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
@@ -21,9 +21,9 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
 
     override suspend fun addRecipe(recipeDTO: RecipeDTO): RecipeDTO? {
         return newSuspendedTransaction {
-            val newRecipeId = source.addRecipe(recipeDTO)
-            val newRecipe = newRecipeId!!.let { source.findRecipeById(it) }
-            newRecipe?.toDto()
+            source.addRecipe(recipeDTO)?.let {
+                source.findRecipeById(it)?.toDto()
+            }
         }
     }
 
@@ -56,8 +56,9 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
 
     override suspend fun acceptRecipeById(id: Int): RecipeDTO? {
         return newSuspendedTransaction {
-            val recipe = source.acceptRecipeById(id)
-            recipe?.toDto()
+            source.acceptRecipeById(id).takeIf { it }?.let {
+                source.findRecipeById(id)?.toDto()
+            }
         }
     }
 }

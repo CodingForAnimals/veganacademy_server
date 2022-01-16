@@ -1,25 +1,19 @@
 package org.codingforanimals.veganacademy.server.features.routes.recipes
 
-import com.google.gson.Gson
-import io.ktor.application.application
 import io.ktor.application.call
-import io.ktor.application.log
 import io.ktor.auth.authenticate
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.get
 import io.ktor.locations.post
-import io.ktor.request.receive
-import io.ktor.response.respond
 import io.ktor.routing.Route
 import org.codingforanimals.veganacademy.server.config.plugins.AUTH_SESSION
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
-import org.codingforanimals.veganacademy.server.features.routes.common.Request
-import org.codingforanimals.veganacademy.server.features.routes.common.Response
-import org.codingforanimals.veganacademy.server.features.routes.common.respondWithFailure
-import org.codingforanimals.veganacademy.server.utils.genericType
+import org.codingforanimals.veganacademy.server.utils.errorResponse
+import org.codingforanimals.veganacademy.server.utils.getRequest
+import org.codingforanimals.veganacademy.server.utils.successResponse
 import org.koin.ktor.ext.inject
 
 
@@ -40,52 +34,35 @@ class RecipeRoutes {
 
 @KtorExperimentalLocationsAPI
 fun Route.recipeRoutes() {
-    val gson by inject<Gson>()
-    val recipeRepository by inject<RecipeRepository>()
+    val recipeService by inject<RecipeService>()
 
     authenticate(AUTH_SESSION) {
         post<RecipeRoutes.Suggest> {
             try {
-                val requestType = genericType<Request<RecipeDTO>>()
-                val requestRaw = call.receive<String>()
-                val request = gson.fromJson<Request<RecipeDTO>>(requestRaw, requestType)
-                val newRecipe = recipeRepository.addRecipe(request.content)
-//                val max = 10000
-//                var curr = 0
-//                while (curr < max) {
-//                    curr++
-//                    newRecipe = recipeRepository.submitRecipe(request.content)
-//                }
-                call.respond(Response.success("Recipe submitted successfully", newRecipe))
+                val request = call.getRequest<RecipeDTO>()
+                val response = recipeService.suggestRecipe(request.content)
+                call.successResponse(response)
             } catch (e: Throwable) {
-                application.log.error(e.stackTraceToString())
-                respondWithFailure("Recipe submission failed", call)
+                call.errorResponse(e)
             }
         }
 
         post<RecipeRoutes.Paginated> {
             try {
-                val requestType = genericType<Request<PaginationRequest<RecipePaginationRequestFilter>>>()
-                val requestRaw = call.receive<String>()
-                val request =
-                    gson.fromJson<Request<PaginationRequest<RecipePaginationRequestFilter>>>(requestRaw, requestType)
-                val recipesResponse = recipeRepository.getPaginatedRecipes(request.content)
-                call.respond(Response.success("Get recipes success", recipesResponse))
+                val request = call.getRequest<PaginationRequest<RecipePaginationRequestFilter>>()
+                val response = recipeService.getPaginatedRecipes(request.content)
+                call.successResponse(response)
             } catch (e: Throwable) {
-                application.log.error(e.stackTraceToString())
-                respondWithFailure("Get recipes failed", call)
-
+                call.errorResponse(e)
             }
         }
 
         get<RecipeRoutes.Accept> { params ->
             try {
-                val acceptedRecipe = recipeRepository.acceptRecipeById(params.recipeId)
-                    ?: return@get respondWithFailure("Unexpected error when accepting recipe", call)
-                call.respond(Response.success("Recipe accepted successfully", acceptedRecipe))
+                val acceptedRecipe = recipeService.acceptRecipeById(params.recipeId)
+                call.successResponse(acceptedRecipe)
             } catch (e: Throwable) {
-                application.log.error(e.stackTraceToString())
-                respondWithFailure("Unexpected error when accepting recipe", call)
+                call.errorResponse(e)
             }
         }
     }

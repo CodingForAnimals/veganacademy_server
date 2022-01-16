@@ -1,13 +1,13 @@
 package org.codingforanimals.veganacademy.server.features.model.repository
 
-import org.codingforanimals.veganacademy.server.features.model.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.dto.UserDTO
 
 interface UserRepository {
-
-    suspend fun addUser(email: String, displayName: String, password: String): User?
+    suspend fun login(email: String, password: String): UserDTO?
+    suspend fun register(email: String, password: String, displayName: String): UserDTO?
     suspend fun findUserById(userId: Int): User?
-    suspend fun findUserByEmail(email: String): User?
+    suspend fun findUserByEmail(email: String): UserDTO?
     suspend fun findAllUsers(): List<UserDTO?>
     suspend fun deleteAll(): Boolean
 

@@ -2,7 +2,7 @@ package org.codingforanimals.veganacademy.server.utils
 
 import io.ktor.auth.Principal
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
-import org.codingforanimals.veganacademy.server.features.model.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.mindrot.jbcrypt.BCrypt
 
 class UserUtils {

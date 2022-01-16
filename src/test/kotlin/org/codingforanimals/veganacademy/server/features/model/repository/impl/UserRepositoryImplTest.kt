@@ -7,7 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
-import org.codingforanimals.veganacademy.server.features.model.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
 import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.server.utils.UserUtils
@@ -57,7 +57,7 @@ class UserRepositoryImplTest {
         every { source.createUser(email, displayName, passwordHash) } returns mockUser
         repository = UserRepositoryImpl(source, userUtils)
 
-        val user = repository.addUser(email, displayName, passwordHash)
+        val user = repository.register(email, displayName, passwordHash)
 
         verify { source.findUserByEmail(email); source.createUser(email, displayName, passwordHash) }
         assertEquals(mockUser.id.value, user?.id?.value)
@@ -78,7 +78,7 @@ class UserRepositoryImplTest {
         every { source.findUserByEmail(email) } returns mockUser
         repository = UserRepositoryImpl(source, userUtils)
 
-        val user = repository.addUser(email, displayName, passwordHash)
+        val user = repository.register(email, displayName, passwordHash)
 
         verify { source.findUserByEmail(email) }
         verify(exactly = 0) { source.createUser(any(), any(), any()) }

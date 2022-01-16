@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.model.data.source.impl
 
-import org.codingforanimals.veganacademy.server.features.model.dao.User
-import org.codingforanimals.veganacademy.server.features.model.dao.UserTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dao.UserTable
 import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
@@ -19,7 +19,7 @@ class UserSourceImpl : UserSource {
         return User.wrapRows(query)
     }
 
-    override fun createUser(email: String, displayName: String, passwordHash: String): User? {
+    override fun createUser(email: String, passwordHash: String, displayName: String): User? {
         return try {
             User.new {
                 this.email = email

@@ -1,11 +1,13 @@
-package org.codingforanimals.veganacademy.server.features.model.repository.mapper
+package org.codingforanimals.veganacademy.server.features.model.mapper
 
-import org.codingforanimals.veganacademy.server.features.model.dao.FoodCategory
-import org.codingforanimals.veganacademy.server.features.model.dao.Recipe
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeIngredient
-import org.codingforanimals.veganacademy.server.features.model.dao.RecipeStep
-import org.codingforanimals.veganacademy.server.features.model.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
+import org.codingforanimals.veganacademy.server.features.model.data.dao.LoggedInUser
+import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredient
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
+import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.dto.LoggedInUserDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
@@ -50,6 +52,11 @@ fun User.toDto() = UserDTO(
     userId = id.value,
     email = email,
     displayName = displayName
+)
+
+fun LoggedInUser.toDto() = LoggedInUserDTO(
+    userDeviceId = userDeviceId,
+    userToken = userToken,
 )
 
 fun SizedIterable<RecipeStep>.toRecipeStepsDTO(): List<RecipeStepDTO> = map { it.toDto() }

@@ -1,4 +1,4 @@
-package org.codingforanimals.veganacademy.server.features.model.dao
+package org.codingforanimals.veganacademy.server.features.model.data.dao
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

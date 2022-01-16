@@ -1,13 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
-import io.mockk.every
-import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
-import org.codingforanimals.veganacademy.server.features.model.dao.Recipe
+import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
@@ -79,10 +77,10 @@ class RecipeRepositoryImplTest : KoinTest {
     fun `given success, when submit recipe, delegate to source`() = runTest {
         transaction {
             recipe = Recipe.new {
-                title = "test recipe"
-                description = "test description"
-//                categories = listOf("cat1")
-                likes = 0
+                this.title = "test recipe"
+                this.description = "test description"
+//                this.categories = listOf("cat1")
+                this.likes = 0
             }
         }
 //        every { recipeSource.addRecipe(any()) } returns recipe
