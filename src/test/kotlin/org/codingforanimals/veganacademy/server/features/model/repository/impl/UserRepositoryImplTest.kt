@@ -60,10 +60,9 @@ class UserRepositoryImplTest {
         val user = repository.register(email, displayName, passwordHash)
 
         verify { source.findUserByEmail(email); source.createUser(email, displayName, passwordHash) }
-        assertEquals(mockUser.id.value, user?.id?.value)
+        assertEquals(mockUser.id.value, user?.userId)
         assertEquals(mockUser.email, user?.email)
         assertEquals(mockUser.displayName, user?.displayName)
-        assertEquals(mockUser.passwordHash, user?.passwordHash)
     }
 
     @Test

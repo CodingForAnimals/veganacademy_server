@@ -6,7 +6,7 @@ import io.ktor.locations.Location
 import io.ktor.locations.post
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import org.codingforanimals.veganacademy.server.features.model.dto.LoggedInUserDTO
+import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.service.RememberMeService
 import org.codingforanimals.veganacademy.server.utils.errorResponse
 import org.codingforanimals.veganacademy.server.utils.getRequest
@@ -23,12 +23,11 @@ fun Route.rememberMeRoutes() {
 
     post<RememberMeLocations> {
         try {
-            val request = call.getRequest<LoggedInUserDTO>()
-            val response = rememberMeService.getLoggedInUser(request.content)
+            val request = call.getRequest<RememberMeCredentialsDTO>()
+            val response = rememberMeService.validateRememberMeCredentials(request.content)
             call.respond(response)
         } catch (e: Throwable) {
             call.errorResponse(e)
         }
     }
-
 }

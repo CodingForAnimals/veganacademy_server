@@ -2,7 +2,7 @@ package org.codingforanimals.veganacademy.server.database
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.data.dao.LoggedInUserTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentialsTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeFoodCategoryTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredientTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStepTable
@@ -15,7 +15,7 @@ object SchemaDefinition {
 
     private val tables = listOf(
         UserTable,
-        LoggedInUserTable,
+        RememberMeCredentialsTable,
         RecipeTable,
         RecipeStepTable,
         RecipeIngredientTable,

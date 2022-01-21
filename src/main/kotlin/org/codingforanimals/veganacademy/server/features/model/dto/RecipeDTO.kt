@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.model.dto
 
 class RecipeDTO(
-    var id: Int,
+    var id: Int? = null,
     var title: String,
     var description: String,
     var categories: List<String>,

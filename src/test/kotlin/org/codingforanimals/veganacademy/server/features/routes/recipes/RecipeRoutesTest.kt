@@ -10,10 +10,10 @@ import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
+import org.codingforanimals.veganacademy.server.utils.gson
 import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
 import testutils.buildRequestBody
-import testutils.gson
 import testutils.setContentTypeText
 import testutils.withTestServer
 import kotlin.test.assertTrue

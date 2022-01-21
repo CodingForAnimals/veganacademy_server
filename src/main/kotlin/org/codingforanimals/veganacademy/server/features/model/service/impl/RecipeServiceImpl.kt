@@ -13,14 +13,6 @@ class RecipeServiceImpl(
     private val recipeRepository: RecipeRepository,
 ) : RecipeService {
 
-    companion object {
-        private const val MESSAGE_SUGGEST_FAILURE = "Suggest recipe failure"
-        private const val MESSAGE_SUGGEST_SUCCESS = "Suggest recipe success"
-        private const val MESSAGE_PAGINATION_SUCCESS = "Get paginated recipes success"
-        private const val MESSAGE_ACCEPT_FAILURE = "Accept recipe failure"
-        private const val MESSAGE_ACCEPT_SUCCESS = "Accept recipe success"
-    }
-
     override suspend fun suggestRecipe(recipeDTO: RecipeDTO): Response<RecipeDTO> {
         val addedRecipeDTO = recipeRepository.addRecipe(recipeDTO)
         return if (addedRecipeDTO == null) {
@@ -45,4 +37,11 @@ class RecipeServiceImpl(
         }
     }
 
+    companion object {
+        private const val MESSAGE_SUGGEST_FAILURE = "Suggest recipe failure"
+        private const val MESSAGE_SUGGEST_SUCCESS = "Suggest recipe success"
+        private const val MESSAGE_PAGINATION_SUCCESS = "Get paginated recipes success"
+        private const val MESSAGE_ACCEPT_FAILURE = "Accept recipe failure"
+        private const val MESSAGE_ACCEPT_SUCCESS = "Accept recipe success"
+    }
 }

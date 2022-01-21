@@ -1,13 +1,13 @@
 package org.codingforanimals.veganacademy.server.features.model.mapper
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
-import org.codingforanimals.veganacademy.server.features.model.data.dao.LoggedInUser
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentials
 import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredient
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
 import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.LoggedInUserDTO
+import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
@@ -54,8 +54,9 @@ fun User.toDto() = UserDTO(
     displayName = displayName
 )
 
-fun LoggedInUser.toDto() = LoggedInUserDTO(
-    userDeviceId = userDeviceId,
+fun RememberMeCredentials.toDto() = RememberMeCredentialsDTO(
+    userId = userId,
+    userDeviceUUID = userDeviceUUID,
     userToken = userToken,
 )
 

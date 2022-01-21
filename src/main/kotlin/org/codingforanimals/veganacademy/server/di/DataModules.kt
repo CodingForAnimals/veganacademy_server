@@ -2,16 +2,16 @@ package org.codingforanimals.veganacademy.server.di
 
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryImpl
-import org.codingforanimals.veganacademy.server.features.model.data.source.LoggedInUserDataSource
+import org.codingforanimals.veganacademy.server.features.model.data.source.RememberMeDataSource
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
 import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
-import org.codingforanimals.veganacademy.server.features.model.data.source.impl.LoggedInUserDataSourceImpl
+import org.codingforanimals.veganacademy.server.features.model.data.source.impl.RememberMeDataSourceImpl
 import org.codingforanimals.veganacademy.server.features.model.data.source.impl.RecipeSourceImpl
 import org.codingforanimals.veganacademy.server.features.model.data.source.impl.UserSourceImpl
-import org.codingforanimals.veganacademy.server.features.model.repository.LoggedInUserRepository
+import org.codingforanimals.veganacademy.server.features.model.repository.RememberMeRepository
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
-import org.codingforanimals.veganacademy.server.features.model.repository.impl.LoggedInUserRepositoryImpl
+import org.codingforanimals.veganacademy.server.features.model.repository.impl.RememberMeRepositoryImpl
 import org.codingforanimals.veganacademy.server.features.model.repository.impl.RecipeRepositoryImpl
 import org.codingforanimals.veganacademy.server.features.model.repository.impl.UserRepositoryImpl
 import org.codingforanimals.veganacademy.server.features.model.service.RecipeService
@@ -29,12 +29,12 @@ private val databaseModule = module {
 private val userModule = module {
     single<UserSource> { UserSourceImpl() }
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
-    single<UserService> { UserServiceImpl(get()) }
+    single<UserService> { UserServiceImpl(get(), get()) }
 }
 
 private val loggedInUserModule = module {
-    single<LoggedInUserDataSource> { LoggedInUserDataSourceImpl() }
-    single<LoggedInUserRepository> { LoggedInUserRepositoryImpl(get()) }
+    single<RememberMeDataSource> { RememberMeDataSourceImpl() }
+    single<RememberMeRepository> { RememberMeRepositoryImpl(get()) }
     single<RememberMeService> { RememberMeServiceImpl(get()) }
 }
 
@@ -46,7 +46,7 @@ private val recipeModule = module {
 
 val dataModules = mutableListOf(
     databaseModule,
-    userModule,
     loggedInUserModule,
+    userModule,
     recipeModule
 )
