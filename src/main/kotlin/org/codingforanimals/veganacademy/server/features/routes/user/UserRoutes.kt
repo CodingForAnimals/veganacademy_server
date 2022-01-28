@@ -11,6 +11,7 @@ import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.features.model.service.UserService
+import org.codingforanimals.veganacademy.server.features.model.service.UserService.Companion.MESSAGE_LOGOUT_SUCCESS
 import org.codingforanimals.veganacademy.server.utils.errorResponse
 import org.codingforanimals.veganacademy.server.utils.getRequest
 import org.codingforanimals.veganacademy.server.utils.successResponse
@@ -51,8 +52,6 @@ fun Route.userRoutes() {
         }
     }
 }
-
-private const val MESSAGE_LOGOUT_SUCCESS = "User logout success"
 
 private fun ApplicationCall.setUserSession(userId: Int) {
     sessions.set(UserSession(userId))

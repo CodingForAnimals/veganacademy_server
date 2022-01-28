@@ -15,8 +15,8 @@ private val modules = sharedModules + dataModules
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 @KtorExperimentalLocationsAPI
-fun Application.run(isProd: Boolean = false, koinModules: List<Module> = modules) {
-    configureApp(isProd, koinModules)
+fun Application.run(koinModules: List<Module> = modules) {
+    configureApp(koinModules)
 
     val databaseFactory by inject<DatabaseFactory>()
     databaseFactory.connect()

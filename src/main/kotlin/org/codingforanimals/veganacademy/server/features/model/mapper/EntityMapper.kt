@@ -1,16 +1,16 @@
 package org.codingforanimals.veganacademy.server.features.model.mapper
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
-import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentials
 import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredient
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentials
 import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
+import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.UserDTO
 import org.jetbrains.exposed.sql.SizedIterable
 

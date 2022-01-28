@@ -8,7 +8,8 @@ fun Application.setupConfig() {
 
     val serverObject = environment.config.config("ktor.server")
     val isProd = serverObject.property("isProd").getString().toBoolean()
-    appConfig.serverConfig = ServerConfig(isProd)
+    val isTesting = serverObject.property("isTesting").getString().toBoolean()
+    appConfig.serverConfig = ServerConfig(isProd, isTesting)
 
     val databaseObject = environment.config.config("ktor.database")
     val jdbcDriver = databaseObject.property("jdbcDriver").getString()
@@ -26,6 +27,7 @@ class AppConfig {
 
 data class ServerConfig(
     val isProd: Boolean,
+    val isTesting: Boolean,
 )
 
 data class DatabaseConfig(

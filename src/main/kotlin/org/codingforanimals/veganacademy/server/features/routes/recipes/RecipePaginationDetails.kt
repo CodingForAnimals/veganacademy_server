@@ -12,7 +12,7 @@ data class RecipePaginationRequestFilter(
     @SerializedName("order_by") val orderBy: String = "",
 )
 
-data class RecipePaginationResponseResult(
+data class RecipePaginationResponse(
     @SerializedName("get_accepted_recipes") val getAcceptedRecipes: Boolean,
     val recipes: List<RecipeDTO>,
 )

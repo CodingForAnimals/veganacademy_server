@@ -5,11 +5,13 @@ import io.ktor.application.install
 import io.ktor.auth.Principal
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
+import org.koin.ktor.ext.inject
 
-fun Application.configureSessions(isProd: Boolean) {
+fun Application.configureSessions() {
+    val appConfig by inject<AppConfig>()
     install(Sessions) {
         cookie<UserSession>(USER_SESSION) {
-            cookie.secure = isProd
+            cookie.secure = appConfig.serverConfig.isProd
             cookie.path = "/"
             cookie.maxAgeInSeconds = 60 * 5
         }

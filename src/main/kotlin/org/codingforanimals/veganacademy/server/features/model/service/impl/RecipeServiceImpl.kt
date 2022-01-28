@@ -3,11 +3,16 @@ package org.codingforanimals.veganacademy.server.features.model.service.impl
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.server.features.model.service.RecipeService
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_ACCEPT_FAILURE_DOES_NOT_EXIST
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_ACCEPT_SUCCESS
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_PAGINATION_SUCCESS
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_SUGGEST_FAILURE
+import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_SUGGEST_SUCCESS
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
 import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponseResult
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponse
 
 class RecipeServiceImpl(
     private val recipeRepository: RecipeRepository,
@@ -22,7 +27,7 @@ class RecipeServiceImpl(
         }
     }
 
-    override suspend fun getPaginatedRecipes(request: PaginationRequest<RecipePaginationRequestFilter>): Response<PaginationResponse<RecipePaginationResponseResult>> {
+    override suspend fun getPaginatedRecipes(request: PaginationRequest<RecipePaginationRequestFilter>): Response<PaginationResponse<RecipePaginationResponse>> {
         return Response.success(MESSAGE_PAGINATION_SUCCESS, recipeRepository.getPaginatedRecipes(request))
 
 
@@ -31,17 +36,9 @@ class RecipeServiceImpl(
     override suspend fun acceptRecipeById(recipeId: Int): Response<RecipeDTO> {
         val recipeDTO = recipeRepository.acceptRecipeById(recipeId)
         return if (recipeDTO == null) {
-            Response.failure(MESSAGE_ACCEPT_FAILURE)
+            Response.failure(MESSAGE_ACCEPT_FAILURE_DOES_NOT_EXIST)
         } else {
             Response.success(MESSAGE_ACCEPT_SUCCESS, recipeDTO)
         }
-    }
-
-    companion object {
-        private const val MESSAGE_SUGGEST_FAILURE = "Suggest recipe failure"
-        private const val MESSAGE_SUGGEST_SUCCESS = "Suggest recipe success"
-        private const val MESSAGE_PAGINATION_SUCCESS = "Get paginated recipes success"
-        private const val MESSAGE_ACCEPT_FAILURE = "Accept recipe failure"
-        private const val MESSAGE_ACCEPT_SUCCESS = "Accept recipe success"
     }
 }

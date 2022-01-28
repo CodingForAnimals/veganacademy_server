@@ -8,7 +8,7 @@ import org.codingforanimals.veganacademy.server.features.model.repository.Recipe
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponseResult
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponse
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository {
@@ -27,7 +27,7 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         }
     }
 
-    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipePaginationRequestFilter>): PaginationResponse<RecipePaginationResponseResult> {
+    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipePaginationRequestFilter>): PaginationResponse<RecipePaginationResponse> {
         return newSuspendedTransaction {
             var recipesDTO =
                 source.getPaginatedRecipes(
@@ -40,7 +40,7 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
             val hasMoreContent = recipesDTO.size == paginationRequest.pageSize + 1
             if (hasMoreContent) recipesDTO = recipesDTO.dropLast(1)
 
-            val result = RecipePaginationResponseResult(
+            val result = RecipePaginationResponse(
                 getAcceptedRecipes = paginationRequest.filter.getAcceptedRecipes,
                 recipes = recipesDTO
             )

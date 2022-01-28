@@ -13,7 +13,7 @@ import org.codingforanimals.veganacademy.server.config.plugins.setupConfig
 import org.koin.core.module.Module
 
 @KtorExperimentalLocationsAPI
-fun Application.configureApp(isProd: Boolean, koinModules: List<Module>) {
+fun Application.configureApp(koinModules: List<Module>) {
     configureKoin(koinModules)
     setupConfig()
     configureAuth()
@@ -21,5 +21,5 @@ fun Application.configureApp(isProd: Boolean, koinModules: List<Module>) {
     configureLogging()
     configureLocations()
     configureRoutes()
-    configureSessions(isProd)
+    configureSessions()
 }

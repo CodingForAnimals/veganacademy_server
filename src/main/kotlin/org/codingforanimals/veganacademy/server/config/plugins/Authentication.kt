@@ -12,6 +12,7 @@ import org.codingforanimals.veganacademy.server.features.routes.common.Response
 import org.koin.ktor.ext.inject
 
 fun Application.configureAuth() {
+    val appConfig by inject<AppConfig>()
     val userRepository by inject<UserRepository>()
 
     install(Authentication) {
@@ -25,12 +26,13 @@ fun Application.configureAuth() {
                 }
             }
 
-            challenge {
-                call.respond(HttpStatusCode.BadRequest, Response.failure<String>("Authentication failed"))
+            if (!appConfig.serverConfig.isTesting) {
+                challenge {
+                    call.respond(HttpStatusCode.BadRequest, Response.failure<String>("Authentication failed"))
+                }
             }
         }
     }
 }
 
 const val AUTH_SESSION = "AUTH_SESSION"
-const val AUTH_FORM = "AUTH-FORM"

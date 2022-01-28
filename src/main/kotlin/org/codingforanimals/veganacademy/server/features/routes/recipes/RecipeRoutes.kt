@@ -18,26 +18,11 @@ import org.koin.ktor.ext.inject
 
 
 @KtorExperimentalLocationsAPI
-@Location("recipe")
-class RecipeRoutes {
-
-    @Location("/paginated")
-    data class Paginated(val parent: RecipeRoutes)
-
-    @Location("/suggest")
-    data class Suggest(val parent: RecipeRoutes)
-
-    @Location("/accept/{recipeId}")
-    data class Accept(val recipeId: Int, val parent: RecipeRoutes)
-
-}
-
-@KtorExperimentalLocationsAPI
 fun Route.recipeRoutes() {
     val recipeService by inject<RecipeService>()
 
     authenticate(AUTH_SESSION) {
-        post<RecipeRoutes.Suggest> {
+        post<RecipeLocations.Suggest> {
             try {
                 val request = call.getRequest<RecipeDTO>()
                 val response = recipeService.suggestRecipe(request.content)
@@ -47,7 +32,7 @@ fun Route.recipeRoutes() {
             }
         }
 
-        post<RecipeRoutes.Paginated> {
+        post<RecipeLocations.Paginated> {
             try {
                 val request = call.getRequest<PaginationRequest<RecipePaginationRequestFilter>>()
                 val response = recipeService.getPaginatedRecipes(request.content)
@@ -57,7 +42,7 @@ fun Route.recipeRoutes() {
             }
         }
 
-        get<RecipeRoutes.Accept> { params ->
+        get<RecipeLocations.Accept> { params ->
             try {
                 val acceptedRecipe = recipeService.acceptRecipeById(params.recipeId)
                 call.successResponse(acceptedRecipe)

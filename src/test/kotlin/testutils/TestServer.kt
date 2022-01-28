@@ -1,6 +1,7 @@
 package testutils
 
 import com.google.gson.Gson
+import io.ktor.application.ApplicationCall
 import io.ktor.config.MapApplicationConfig
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -8,9 +9,12 @@ import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.TestApplicationRequest
 import io.ktor.server.testing.withTestApplication
+import io.ktor.sessions.sessions
+import io.ktor.sessions.set
 import org.codingforanimals.veganacademy.server.config.plugins.AppConfig
 import org.codingforanimals.veganacademy.server.config.plugins.DatabaseConfig
 import org.codingforanimals.veganacademy.server.config.plugins.ServerConfig
+import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForServerTest
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
@@ -39,6 +43,7 @@ import org.koin.dsl.module
 fun MapApplicationConfig.createConfigForTesting() {
     // Server config
     put("ktor.server.isProd", "false")
+    put("ktor.server.isTesting", "true")
 
     // Database Config
     put("ktor.database.jdbcDriver", "org.h2.Driver")
@@ -53,7 +58,6 @@ fun MapApplicationConfig.createConfigForTesting() {
 }
 
 fun getAppConfigForUnitTest(): AppConfig {
-
     return AppConfig().apply {
         databaseConfig = DatabaseConfig(
             jdbcDriver = "org.h2.Driver",
@@ -62,7 +66,7 @@ fun getAppConfigForUnitTest(): AppConfig {
             dbPassword = "password",
             maxPoolSize = 1
         )
-        serverConfig = ServerConfig(isProd = false)
+        serverConfig = ServerConfig(isProd = false, isTesting = true)
     }
 }
 
@@ -73,16 +77,10 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
             (environment.config as MapApplicationConfig).apply {
                 createConfigForTesting()
             }
-            run(isProd = false, koinModules = koinModules)
+            run(koinModules = koinModules)
         }, block
     )
 }
-
-fun setContentTypeFormUrlEncoded(request: TestApplicationRequest) =
-    request.addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
-
-fun setContentTypeText(request: TestApplicationRequest) =
-    request.addHeader(HttpHeaders.ContentType, ContentType.Text.Plain.toString())
 
 val appTestModule = module {
     single { Gson() }
@@ -104,4 +102,6 @@ val appTestModule = module {
     single<RecipeService> { RecipeServiceImpl(get()) }
 }
 
-fun buildRequestBody(json: String) = mapOf("content" to json).toString()
+fun ApplicationCall.setUserSession(userId: Int) {
+    sessions.set(UserSession(userId))
+}

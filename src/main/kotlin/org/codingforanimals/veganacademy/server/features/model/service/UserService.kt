@@ -19,5 +19,7 @@ interface UserService {
         const val MESSAGE_LOGIN_FAILURE = "User login failed. User with such credentials doesn't exist"
         const val MESSAGE_LOGIN_SUCCESS = "User login success"
         const val MESSAGE_LOGIN_SUCCESS_REMEMBER_ME_FAILED = "User logged in successfully. "
+
+        const val MESSAGE_LOGOUT_SUCCESS = "User logout success"
     }
 }
