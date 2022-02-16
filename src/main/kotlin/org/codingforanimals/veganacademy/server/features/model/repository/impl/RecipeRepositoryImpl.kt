@@ -5,10 +5,11 @@ import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.mapper.toDto
 import org.codingforanimals.veganacademy.server.features.model.mapper.toRecipeDtoList
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
+import org.codingforanimals.veganacademy.server.features.routes.common.PaginationInfo
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponse
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository {
@@ -27,30 +28,14 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         }
     }
 
-    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipePaginationRequestFilter>): PaginationResponse<RecipePaginationResponse> {
+    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipesFilter>): PaginationResponse<RecipesFilter, RecipeDTO> {
         return newSuspendedTransaction {
-            var recipesDTO =
-                source.getPaginatedRecipes(
-                    paginationRequest.pageSize,
-                    paginationRequest.pageNumber,
-                    paginationRequest.filter,
-                    this,
-                ).toRecipeDtoList()
+            var recipesDTO = getPaginatedRecipesByCategoriesOrIngredients(paginationRequest, this)
 
-            val hasMoreContent = recipesDTO.size == paginationRequest.pageSize + 1
+            val hasMoreContent = recipesDTO.size == paginationRequest.paginationInfo.pageSize + 1
             if (hasMoreContent) recipesDTO = recipesDTO.dropLast(1)
 
-            val result = RecipePaginationResponse(
-                getAcceptedRecipes = paginationRequest.filter.getAcceptedRecipes,
-                recipes = recipesDTO
-            )
-            PaginationResponse(
-                hasMoreContent = hasMoreContent,
-                resultSize = recipesDTO.size,
-                pageSize = paginationRequest.pageSize,
-                pageNumber = paginationRequest.pageNumber,
-                result = result
-            )
+            return@newSuspendedTransaction createPaginationResponse(recipesDTO, paginationRequest, hasMoreContent)
         }
     }
 
@@ -60,5 +45,45 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
                 source.findRecipeById(id)?.toDto()
             }
         }
+    }
+
+    private fun getPaginatedRecipesByCategoriesOrIngredients(
+        paginationRequest: PaginationRequest<RecipesFilter>,
+        transaction: Transaction
+    ): List<RecipeDTO> = with(paginationRequest) {
+        return if (paginationRequest.filter.ingredients.isEmpty()) {
+            source.getPaginatedRecipesByCategory(
+                paginationInfo.pageSize,
+                paginationInfo.pageNumber,
+                filter
+            )
+        } else {
+            source.getPaginatedRecipesByIngredients(
+                paginationInfo.pageSize,
+                paginationInfo.pageNumber,
+                paginationRequest.filter,
+                transaction
+            )
+        }.toRecipeDtoList()
+    }
+
+    private fun createPaginationResponse(
+        recipesDTO: List<RecipeDTO>,
+        paginationRequest: PaginationRequest<RecipesFilter>,
+        hasMoreContent: Boolean
+    ): PaginationResponse<RecipesFilter, RecipeDTO> {
+        val paginationInfo = PaginationInfo(
+            pageSize = paginationRequest.paginationInfo.pageSize,
+            pageNumber = paginationRequest.paginationInfo.pageNumber,
+            hasMoreContent = hasMoreContent,
+            resultSize = recipesDTO.size,
+        )
+
+        val filter = paginationRequest.filter
+        return PaginationResponse(
+            paginationInfo = paginationInfo,
+            filter = filter,
+            result = recipesDTO
+        )
     }
 }

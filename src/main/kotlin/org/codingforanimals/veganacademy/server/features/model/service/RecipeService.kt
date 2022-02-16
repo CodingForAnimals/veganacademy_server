@@ -4,13 +4,12 @@ import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponse
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 
 interface RecipeService {
 
     suspend fun suggestRecipe(recipeDTO: RecipeDTO): Response<RecipeDTO>
-    suspend fun getPaginatedRecipes(request: PaginationRequest<RecipePaginationRequestFilter>): Response<PaginationResponse<RecipePaginationResponse>>
+    suspend fun getPaginatedRecipes(request: PaginationRequest<RecipesFilter>): Response<PaginationResponse<RecipesFilter, RecipeDTO>>
     suspend fun acceptRecipeById(recipeId: Int): Response<RecipeDTO>
 
     companion object {

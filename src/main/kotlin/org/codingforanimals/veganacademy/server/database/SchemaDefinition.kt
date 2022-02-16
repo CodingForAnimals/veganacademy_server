@@ -39,7 +39,7 @@ object SchemaDefinition {
 
     fun createSchema() {
         transaction {
-            recreate()
+//            recreate()
         }
     }
 

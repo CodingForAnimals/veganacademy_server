@@ -88,13 +88,13 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
                 handleRequest(HttpMethod.Post, RecipePaginatedLocation()) {
                     setBody(request)
                 }.apply {
-                    val res = getParsedResponse<PaginationResponse<RecipePaginationResponse>>()
+                    val res = getParsedResponse<PaginationResponse<RecipesFilter, RecipeDTO>>()
                     val pagination = res.content
                     assertNotNull(res.content)
                     assertEquals(RecipeService.MESSAGE_PAGINATION_SUCCESS, res.message)
-                    assertEquals(0, pagination?.resultSize)
-                    assertEquals(paginatedRecipesData.pageSize, pagination?.pageSize)
-                    assertEquals(true, pagination?.result?.recipes?.isEmpty())
+                    assertEquals(0, pagination?.paginationInfo?.resultSize)
+                    assertEquals(paginatedRecipesData.paginationInfo.pageSize, pagination?.paginationInfo?.pageSize)
+                    assertEquals(true, pagination?.result?.isEmpty())
                 }
             }
 
@@ -105,11 +105,11 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
                     handleRequest(HttpMethod.Post, RecipePaginatedLocation()) {
                         setBody(this@PaginatedRecipesRoutes.request)
                     }.apply {
-                        val res = getParsedResponse<PaginationResponse<RecipePaginationResponse>>()
+                        val res = getParsedResponse<PaginationResponse<RecipesFilter, RecipeDTO>>()
                         assertNotNull(res.content)
                         assertEquals(RecipeService.MESSAGE_PAGINATION_SUCCESS, res.message)
-                        assertEquals(true, res.content?.hasMoreContent)
-                        assertEquals(paginatedRecipesData.pageSize, res.content?.resultSize)
+                        assertEquals(true, res.content?.paginationInfo?.hasMoreContent)
+                        assertEquals(paginatedRecipesData.paginationInfo.pageSize, res.content?.paginationInfo?.resultSize)
                     }
                 }
             }

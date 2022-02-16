@@ -11,8 +11,7 @@ import org.codingforanimals.veganacademy.server.features.model.service.RecipeSer
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationResponse
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 
 class RecipeServiceImpl(
     private val recipeRepository: RecipeRepository,
@@ -27,10 +26,8 @@ class RecipeServiceImpl(
         }
     }
 
-    override suspend fun getPaginatedRecipes(request: PaginationRequest<RecipePaginationRequestFilter>): Response<PaginationResponse<RecipePaginationResponse>> {
+    override suspend fun getPaginatedRecipes(request: PaginationRequest<RecipesFilter>): Response<PaginationResponse<RecipesFilter, RecipeDTO>> {
         return Response.success(MESSAGE_PAGINATION_SUCCESS, recipeRepository.getPaginatedRecipes(request))
-
-
     }
 
     override suspend fun acceptRecipeById(recipeId: Int): Response<RecipeDTO> {
