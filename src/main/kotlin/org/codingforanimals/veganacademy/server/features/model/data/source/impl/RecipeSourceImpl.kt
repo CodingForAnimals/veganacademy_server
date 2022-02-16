@@ -8,6 +8,7 @@ import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIn
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTable
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
+import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
@@ -29,18 +30,71 @@ class RecipeSourceImpl : RecipeSource {
         return Recipe.findById(id)
     }
 
-    override suspend fun addRecipe(recipeDTO: RecipeDTO): Int? {
-        return try {
-            val newRecipe = createRecipe(recipeDTO)
-            newRecipe.takeIf { it != null }?.let {
-                addRecipeIngredients(it, recipeDTO.ingredients)
-                addRecipeSteps(it, recipeDTO.steps)
-                addRecipeCategories(it, recipeDTO.categories)
-                return it.id.value
-            }
-        } catch (e: Throwable) {
-            null
+    override suspend fun addRecipe(recipeDTO: RecipeDTO): Int {
+        val newRecipe = createRecipe(recipeDTO)
+        addRecipeAttributes(newRecipe, recipeDTO)
+        return newRecipe.id.value
+    }
+
+    private fun addRecipeAttributes(newRecipe: Recipe, recipeDTO: RecipeDTO) {
+        addRecipeIngredients(newRecipe, recipeDTO.ingredients)
+        addRecipeSteps(newRecipe, recipeDTO.steps)
+        addRecipeCategories(newRecipe, recipeDTO.categories)
+    }
+
+    private fun addRecipeIngredients(
+        newRecipe: Recipe,
+        ingredientsDTO: List<RecipeIngredientDTO>
+    ) = ingredientsDTO.forEach { dto ->
+        val ingredientReplacement = addIngredientReplacementIfNeeded(dto)
+        addIngredient(newRecipe, dto, ingredientReplacement)
+    }
+
+    private fun addIngredientReplacementIfNeeded(ingredientDTO: RecipeIngredientDTO): RecipeIngredient? {
+        var ingredientReplacement: RecipeIngredient? = null
+        ingredientDTO.replacement?.let { replacement ->
+            ingredientReplacement = addIngredientReplacement(replacement)
         }
+        return ingredientReplacement
+    }
+
+    private fun addIngredientReplacement(replacement: BaseRecipeIngredientDTO): RecipeIngredient =
+        RecipeIngredient.new {
+            this.name = replacement.name
+            this.quantity = replacement.quantity
+            this.measurementUnit = replacement.measurementUnit
+        }
+
+    private fun addIngredient(
+        newRecipe: Recipe,
+        ingredientDTO: RecipeIngredientDTO,
+        ingredientReplacement: RecipeIngredient?
+    ) {
+        RecipeIngredient.new {
+            this.recipe = newRecipe
+            this.name = ingredientDTO.name
+            this.quantity = ingredientDTO.quantity
+            this.measurementUnit = ingredientDTO.measurementUnit
+            this.replacement = ingredientReplacement
+        }
+    }
+
+    private fun addRecipeSteps(newRecipe: Recipe, steps: List<RecipeStepDTO>) {
+        steps.forEach {
+            RecipeStep.new {
+                this.recipe = newRecipe
+                this.number = it.number.toShort()
+                this.description = it.description
+            }
+        }
+    }
+
+    private fun addRecipeCategories(newRecipe: Recipe, categories: List<String>) {
+        val availableCategories = mutableListOf<FoodCategory>()
+        categories.forEach { categoryName ->
+            findCategoryByName(categoryName)?.let { availableCategories.add(it) }
+        }
+        newRecipe.categories = SizedCollection(availableCategories)
     }
 
     override suspend fun getPaginatedRecipes(
@@ -119,60 +173,13 @@ class RecipeSourceImpl : RecipeSource {
         return query
     }
 
-    private fun createRecipe(recipeDTO: RecipeDTO): Recipe? {
-        return try {
-            Recipe.new {
-                this.title = recipeDTO.title
-                this.description = recipeDTO.description
-                this.likes = recipeDTO.likes
-                this.isAccepted = recipeDTO.isAccepted
-            }
-        } catch (e: Throwable) {
-            null
+    private fun createRecipe(recipeDTO: RecipeDTO): Recipe =
+        Recipe.new {
+            this.title = recipeDTO.title
+            this.description = recipeDTO.description
+            this.likes = recipeDTO.likes
+            this.isAccepted = recipeDTO.isAccepted
         }
-    }
-
-
-    private fun addRecipeIngredients(
-        newRecipe: Recipe,
-        ingredients: List<RecipeIngredientDTO>
-    ) {
-        ingredients.forEach { ingredient ->
-            var ingredientReplacement: RecipeIngredient? = null
-            ingredient.replacement?.let { replacement ->
-                ingredientReplacement = RecipeIngredient.new {
-                    this.name = replacement.name
-                    this.quantity = replacement.quantity
-                    this.measurementUnit = replacement.measurementUnit
-                }
-            }
-            RecipeIngredient.new {
-                this.recipe = newRecipe
-                this.name = ingredient.name
-                this.quantity = ingredient.quantity
-                this.measurementUnit = ingredient.measurementUnit
-                this.replacement = ingredientReplacement
-            }
-        }
-    }
-
-    private fun addRecipeSteps(newRecipe: Recipe, steps: List<RecipeStepDTO>) {
-        steps.forEach {
-            RecipeStep.new {
-                this.recipe = newRecipe
-                this.number = it.number.toShort()
-                this.description = it.description
-            }
-        }
-    }
-
-    private fun addRecipeCategories(newRecipe: Recipe, categories: List<String>) {
-        val availableCategories = mutableListOf<FoodCategory>()
-        categories.forEach { categoryName ->
-            findCategoryByName(categoryName)?.let { availableCategories.add(it) }
-        }
-        newRecipe.categories = SizedCollection(availableCategories)
-    }
 
     private fun findCategoryByName(category: String): FoodCategory? {
         return FoodCategory.find { FoodCategoryTable.category eq category }.firstOrNull()
