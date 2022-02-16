@@ -4,9 +4,10 @@ import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.routes.common.PaginationInfo
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.Request
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.codingforanimals.veganacademy.server.features.routes.user.UserLoginRequest
 import org.codingforanimals.veganacademy.server.features.routes.user.UserRegisterRequest
 
@@ -51,15 +52,18 @@ object RecipeObjects {
         isAccepted = false,
     )
 
-    private val paginationFilter = RecipePaginationRequestFilter(
-        getAcceptedRecipes = false,
+    private val filter = RecipesFilter(
         category = "MAIN_DISH",
     )
 
-    val paginatedRecipesData = PaginationRequest(
+    private val paginationInfo = PaginationInfo(
         pageSize = 2,
-        pageNumber = 0,
-        filter = paginationFilter,
+        pageNumber = 2
+    )
+
+    val paginatedRecipesData = PaginationRequest(
+        paginationInfo = paginationInfo,
+        filter = filter,
     )
 }
 

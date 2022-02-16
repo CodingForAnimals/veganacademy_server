@@ -12,7 +12,7 @@ import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIng
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipePaginationRequestFilter
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SizedCollection
@@ -26,11 +26,9 @@ import org.jetbrains.exposed.sql.update
 
 class RecipeSourceImpl : RecipeSource {
 
-    override suspend fun findRecipeById(id: Int): Recipe? {
-        return Recipe.findById(id)
-    }
+    override fun findRecipeById(id: Int): Recipe? = Recipe.findById(id)
 
-    override suspend fun addRecipe(recipeDTO: RecipeDTO): Int {
+    override fun addRecipe(recipeDTO: RecipeDTO): Int {
         val newRecipe = createRecipe(recipeDTO)
         addRecipeAttributes(newRecipe, recipeDTO)
         return newRecipe.id.value
@@ -97,27 +95,22 @@ class RecipeSourceImpl : RecipeSource {
         newRecipe.categories = SizedCollection(availableCategories)
     }
 
-    override suspend fun getPaginatedRecipes(
+    override fun getPaginatedRecipesByCategory(
         pageSize: Int,
         pageNumber: Int,
-        filter: RecipePaginationRequestFilter,
-        transaction: Transaction,
+        filter: RecipesFilter
     ): SizedIterable<Recipe> {
-        return if (filter.ingredients.isEmpty()) {
-            val query = createQueryWithFilter(filter)
-            val offset = ((pageNumber - 1) * pageSize).toLong()
-            query.limit(pageSize + 1, offset)
-            Recipe.wrapRows(query)
-        } else {
-            getPaginatedRecipesByIngredients(transaction, pageSize, pageNumber, filter)
-        }
+        val query = createQueryWithFilter(filter)
+        val offset = ((pageNumber - 1) * pageSize).toLong()
+        query.limit(pageSize + 1, offset)
+        return Recipe.wrapRows(query)
     }
 
-    private fun getPaginatedRecipesByIngredients(
-        transaction: Transaction,
+    override fun getPaginatedRecipesByIngredients(
         pageSize: Int,
         pageNumber: Int,
-        filter: RecipePaginationRequestFilter,
+        filter: RecipesFilter,
+        transaction: Transaction
     ): SizedIterable<Recipe> {
         val ingList = filter.ingredients.joinToString("','", "('", "')")
         val limit = pageSize + 1
@@ -146,15 +139,15 @@ class RecipeSourceImpl : RecipeSource {
         return Recipe.forIds(ids)
     }
 
-    override suspend fun findRecipeByOffset(offset: Long): Recipe? {
+    override fun findRecipeByOffset(offset: Long): Recipe? {
         return Recipe.all().limit(1, offset).firstOrNull()
     }
 
-    override suspend fun acceptRecipeById(id: Int): Boolean {
+    override fun acceptRecipeById(id: Int): Boolean {
         return RecipeTable.update({ RecipeTable.id eq id }) { it[isAccepted] = true } > 0
     }
 
-    private fun createQueryWithFilter(filter: RecipePaginationRequestFilter): Query {
+    private fun createQueryWithFilter(filter: RecipesFilter): Query {
         val category = findCategoryByName(filter.category)
         val categoryId = category?.id?.value
 

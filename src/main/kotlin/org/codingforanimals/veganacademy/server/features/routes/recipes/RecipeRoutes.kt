@@ -3,7 +3,6 @@ package org.codingforanimals.veganacademy.server.features.routes.recipes
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
 import io.ktor.locations.get
 import io.ktor.locations.post
 import io.ktor.routing.Route
@@ -34,7 +33,7 @@ fun Route.recipeRoutes() {
 
         post<RecipeLocations.Paginated> {
             try {
-                val request = call.getRequest<PaginationRequest<RecipePaginationRequestFilter>>()
+                val request = call.getRequest<PaginationRequest<RecipesFilter>>()
                 val response = recipeService.getPaginatedRecipes(request.content)
                 call.successResponse(response)
             } catch (e: Throwable) {
