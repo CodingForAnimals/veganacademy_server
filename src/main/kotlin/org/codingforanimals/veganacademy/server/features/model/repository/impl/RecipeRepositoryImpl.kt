@@ -53,7 +53,7 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
             source.getPaginatedRecipesByIngredients(
                 paginationInfo.pageSize,
                 paginationInfo.pageNumber,
-                paginationRequest.filter,
+                filter,
                 transaction
             )
         }.toRecipeDtoList()
@@ -72,6 +72,7 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         )
 
         val filter = paginationRequest.filter
+
         return PaginationResponse(
             paginationInfo = paginationInfo,
             filter = filter,

@@ -49,7 +49,7 @@ object RecipeObjects {
         steps = listOf(recipeStepDTO),
         ingredients = listOf(recipeIngredientDTO),
         likes = 1,
-        isAccepted = false,
+        isAccepted = true,
     )
 
     private val filter = RecipesFilter(

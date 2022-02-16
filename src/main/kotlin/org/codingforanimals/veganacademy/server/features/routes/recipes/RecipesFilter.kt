@@ -5,7 +5,7 @@ import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTa
 import org.jetbrains.exposed.sql.Column
 
 data class RecipesFilter(
-    val category: String = "",
+    val category: String = "MAIN_DISH",
     val ingredients: List<String> = listOf(),
     val name: String = "",
     @SerializedName("get_accepted_recipes") val getAcceptedRecipes: Boolean = true,

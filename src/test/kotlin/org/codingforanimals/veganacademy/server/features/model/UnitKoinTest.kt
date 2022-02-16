@@ -1,8 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.model
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestResult
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.junit.After
 import org.junit.Before
@@ -24,6 +27,6 @@ open class UnitKoinTest: KoinTest {
         databaseFactory.close()
     }
 
-    protected fun runTestWithTransaction(callback: suspend () -> Unit) =
-        runTest { newSuspendedTransaction { callback() } }
+    protected fun runTestWithTransaction(callback: suspend TestScope.(Transaction) -> Unit): TestResult =
+        runTest { newSuspendedTransaction { callback(this) } }
 }

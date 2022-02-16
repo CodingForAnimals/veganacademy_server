@@ -1,10 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.model.data.source.impl
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.codingforanimals.veganacademy.server.features.model.UnitKoinTest
-import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
 //import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.codingforanimals.veganacademy.server.features.model.UnitKoinTest
+import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.junit.Test
 import testutils.RecipeObjects
 import kotlin.test.assertEquals
@@ -27,14 +28,15 @@ class RecipeSourceImplTest : UnitKoinTest() {
     }
 
     @Test
-    fun `given existing recipe with an id, when findRecipeById, return corresponding entity`() = runTestWithTransaction {
-        val id = sut.addRecipe(recipeDTO)
+    fun `given existing recipe with an id, when findRecipeById, return corresponding entity`() =
+        runTestWithTransaction {
+            val id = sut.addRecipe(recipeDTO)
 
-        val entity = sut.findRecipeById(id!!)
+            val entity = sut.findRecipeById(id)
 
-        assertNotNull(entity)
-        assertEquals(id, entity.id.value)
-    }
+            assertNotNull(entity)
+            assertEquals(id, entity.id.value)
+        }
 
     @Test
     fun `given correct DTO, when addRecipe, then return id of new inserted recipe`() = runTestWithTransaction {
@@ -50,44 +52,87 @@ class RecipeSourceImplTest : UnitKoinTest() {
         assertTrue(recipes.empty())
     }
 
-//    @Test
-//    fun `given useful filter, when getPaginatedRecipesByCategory`() = runTestWithTransaction {
-//        val filter = RecipesFilter()
-//        createRecipes(sut)
-//
-//        val recipes = sut.getPaginatedRecipesByCategory(
-//            pageSize = 2,
-//            pageNumber = 1,
-//            filter = filter
-//        )
-//
-//        assertFalse(recipes.empty())
-//    }
+    @Test
+    fun `given recipes match filter, when getPaginatedRecipesByCategory, then return populated list`() =
+        runTestWithTransaction {
+            val filter = RecipesFilter()
+            createRecipes()
 
-    private suspend fun createRecipes(recipeSource: RecipeSource) {
-        val r1 = recipeDTO
+            val recipes = sut.getPaginatedRecipesByCategory(
+                pageSize = 2,
+                pageNumber = 1,
+                filter = filter
+            )
 
-        val r2 = recipeDTO
-        val r2ing = r2.ingredients.toMutableList()
-        r2ing.add(RecipeIngredientDTO(null, null, "new ingredient", 3, "g"))
-        r2.categories = listOf("DESSERT")
-        r2.ingredients = r2ing
+            assertFalse(recipes.empty())
+        }
 
-        val r3 = recipeDTO
-        val r3cats = r3.categories.toMutableList()
-        r3cats.add("DESSERT")
-        r3cats.add("SOUP")
-        r3.categories = r3cats
+    @Test
+    fun `given no recipes match filter, when getPaginatedRecipesByCategory, then return empty list`() =
+        runTestWithTransaction {
+            val filter = RecipesFilter(category = "SMOOTHIE")
+            createRecipes()
 
-        val r4 = recipeDTO
-        val r4ing = r4.ingredients.toMutableList()
-        r4ing.add(RecipeIngredientDTO(null, null, "new ingredient", 3, "g"))
-        r4.categories = listOf("DESSERT")
-        r4.ingredients = r4ing
+            val recipes = sut.getPaginatedRecipesByCategory(
+                pageSize = 2,
+                pageNumber = 1,
+                filter = filter
+            )
 
-        recipeSource.addRecipe(r1)
-        recipeSource.addRecipe(r2)
-        recipeSource.addRecipe(r3)
-        recipeSource.addRecipe(r4)
+            assertTrue(recipes.empty())
+        }
+
+    @Test
+    fun `given no recipes match ingredients, when getPaginatedRecipesByIngredients, then return empty list`() =
+        runTestWithTransaction { transaction ->
+            val filter = RecipesFilter(
+                ingredients = listOf("celery")
+            )
+            createRecipes()
+
+            val recipes = sut.getPaginatedRecipesByIngredients(
+                pageSize = 2,
+                pageNumber = 1,
+                filter = filter,
+                transaction = transaction
+            )
+
+            assertTrue(recipes.empty())
+        }
+
+    @Test
+    fun `given recipes match ingredients, when getPaginatedRecipesByIngredients, then return populated list`() =
+        runTestWithTransaction { transaction ->
+            val filter = RecipesFilter(ingredients = listOf("new ingredient"))
+            createRecipes()
+
+            val recipes = sut.getPaginatedRecipesByIngredients(
+                pageSize = 2,
+                pageNumber = 1,
+                filter = filter,
+                transaction = transaction
+            )
+
+            assertFalse(recipes.empty())
+
+            val ingredientsList = recipes.map { it.ingredients }
+            ingredientsList.forEach { iterable ->
+                val ings = iterable.map { it.name }
+                val contains = ings.contains("new ingredient")
+                assertTrue(contains)
+            }
+        }
+
+    private fun createRecipes() {
+        sut.addRecipe(recipeDTO)
+
+        val ing = recipeDTO.ingredients.toMutableList()
+        ing.add(RecipeIngredientDTO(null, null, "new ingredient", 3, "g"))
+        recipeDTO.categories = listOf("DESSERT", "MAIN_DISH")
+        recipeDTO.ingredients = ing
+        sut.addRecipe(recipeDTO)
+
+        recipeDTO.categories = listOf("MAIN_DISH", "SOUP")
+        sut.addRecipe(recipeDTO)
     }
 }
