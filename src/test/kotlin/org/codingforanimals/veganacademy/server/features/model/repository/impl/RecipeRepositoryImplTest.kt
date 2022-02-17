@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
+import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
@@ -16,6 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.test.KoinTest
+import kotlin.test.assertNotNull
 
 @ExperimentalCoroutinesApi
 class RecipeRepositoryImplTest : KoinTest {
@@ -23,10 +24,9 @@ class RecipeRepositoryImplTest : KoinTest {
     private lateinit var databaseFactory: DatabaseFactoryForUnitTest
 
     private val recipeSource: RecipeSource = mockk()
+    private val recipeMock = mockk<Recipe>()
 
-    private val recipeRepository = RecipeRepositoryImpl(recipeSource)
-
-    lateinit var recipe: Recipe
+    private val sut = RecipeRepositoryImpl(recipeSource)
 
     private val recipeDTO = RecipeDTO(
         title = "recipe title",
@@ -61,42 +61,21 @@ class RecipeRepositoryImplTest : KoinTest {
     }
 
     @Test
-    fun `given error, when submit recipe, don't delegate to source`() = runTest {
-//        every { recipeSource.addRecipe(any()) } returns null
-//
-//        recipeRepository.addRecipe(recipeDTO)
-//
-//        verify(exactly = 0) {
-//            recipeSource.addRecipeIngredients(any(), any())
-//            recipeSource.addRecipeSteps(any(), any())
-//            recipeSource.findRecipeById(any())
-//        }
+    fun `given recipe saved successfully, when addRecipe, then return recipe`() = runTest {
+        val insertedRecipe = insertRecipe()
+        every { recipeSource.addRecipe(any()) } returns insertedRecipe.id.value
+        every { recipeSource.findRecipeById(any()) } returns insertedRecipe
+
+        val recipe = sut.addRecipe(recipeDTO)
+
+        assertNotNull(recipe)
     }
 
-    @Test
-    fun `given success, when submit recipe, delegate to source`() = runTest {
-        transaction {
-            recipe = Recipe.new {
-                this.title = "test recipe"
-                this.description = "test description"
-//                this.categories = listOf("cat1")
-                this.likes = 0
-            }
-        }
-//        every { recipeSource.addRecipe(any()) } returns recipe
-//        justRun { recipeSource.addRecipeIngredients(any(), any()) }
-//        justRun { recipeSource.addRecipeSteps(any(), any()) }
-//        every { recipeSource.findRecipeById(any()) } returns recipe
-
-        recipeRepository.addRecipe(recipeDTO)
-
-        verify {
-//            recipeSource.addRecipe(any())
-//            recipeSource.addRecipeIngredients(any(), any())
-//            recipeSource.addRecipeSteps(any(), any())
-//            recipeSource.findRecipeById(any())
-        }
-
-    }
+    private fun insertRecipe() = transaction { Recipe.new {
+        title = "title"
+        description = "desc"
+        likes = 1
+        isAccepted = false
+    } }
 
 }

@@ -22,8 +22,9 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
 
     override suspend fun addRecipe(recipeDTO: RecipeDTO): RecipeDTO? {
         return newSuspendedTransaction {
-            source.addRecipe(recipeDTO)?.let {
-                source.findRecipeById(it)?.toDto()
+            source.addRecipe(recipeDTO).let {
+                val r = source.findRecipeById(it)
+                    r?.toDto()
             }
         }
     }

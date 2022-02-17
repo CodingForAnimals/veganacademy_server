@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.Transaction
 
 interface RecipeSource {
     fun findRecipeById(id: Int): Recipe?
-    fun addRecipe(recipeDTO: RecipeDTO): Int?
+    fun addRecipe(recipeDTO: RecipeDTO): Int
     fun findRecipeByOffset(offset: Long): Recipe?
     fun acceptRecipeById(id: Int): Boolean
     fun getRecipesById(ids: List<Int>): SizedIterable<Recipe>

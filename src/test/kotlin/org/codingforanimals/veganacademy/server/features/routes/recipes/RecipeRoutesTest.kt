@@ -131,7 +131,12 @@ internal class RecipeRoutesTest : AutoCloseKoinTest() {
                             HttpMethod.Post,
                             RecipeSuggestionLocation()
                         ) { setBody(Request(recipeDTO).toJson()) }.apply {
-                            callback()
+                            handleRequest(
+                                HttpMethod.Post,
+                                RecipeSuggestionLocation()
+                            ) { setBody(Request(recipeDTO).toJson()) }.apply {
+                                callback()
+                            }
                         }
                     }
                 }

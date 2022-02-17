@@ -9,7 +9,6 @@ import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
 import org.codingforanimals.veganacademy.server.features.model.data.dao.User
 import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
-import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.server.utils.UserUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.After
@@ -26,16 +25,19 @@ class UserRepositoryImplTest {
     private val userUtils: UserUtils = mockk()
 
     private lateinit var database: DatabaseFactory
-    private lateinit var repository: UserRepository
 
     private val email = "email"
     private val passwordHash = "password"
     private val displayName = "displayName"
 
+    private val sut = UserRepositoryImpl(source, userUtils)
+
     @Before
     fun setup() {
         database = DatabaseFactoryForUnitTest()
         database.connect()
+
+        every { userUtils.hashPassword(any()) } returns passwordHash
     }
 
     @After
@@ -46,20 +48,13 @@ class UserRepositoryImplTest {
 
     @Test
     fun `given user doesn't exist, when add user, then return user`() = runTest {
-        val mockUser = transaction {
-            User.new {
-                email = "email"
-                displayName = "displayName"
-                passwordHash = "passwordHash"
-            }
-        }
-        every { source.findUserByEmail(email) } returns null
-        every { source.createUser(email, displayName, passwordHash) } returns mockUser
-        repository = UserRepositoryImpl(source, userUtils)
+        val mockUser = createUser()
+        every { source.findUserByEmail(any()) } returns null
+        every { source.createUser(any(), any(), any()) } returns mockUser
 
-        val user = repository.register(email, displayName, passwordHash)
+        val user = sut.register(email, passwordHash, displayName)
 
-        verify { source.findUserByEmail(email); source.createUser(email, displayName, passwordHash) }
+        verify { source.findUserByEmail(email); source.createUser(email, passwordHash, displayName) }
         assertEquals(mockUser.id.value, user?.userId)
         assertEquals(mockUser.email, user?.email)
         assertEquals(mockUser.displayName, user?.displayName)
@@ -67,20 +62,21 @@ class UserRepositoryImplTest {
 
     @Test
     fun `given user already exists, when add user, then return null`() = runTest {
-        val mockUser = transaction {
-            User.new {
-                email = "email"
-                displayName = "displayName"
-                passwordHash = "passwordHash"
-            }
-        }
+        val mockUser = createUser()
         every { source.findUserByEmail(email) } returns mockUser
-        repository = UserRepositoryImpl(source, userUtils)
 
-        val user = repository.register(email, displayName, passwordHash)
+        val user = sut.register(email, displayName, passwordHash)
 
         verify { source.findUserByEmail(email) }
         verify(exactly = 0) { source.createUser(any(), any(), any()) }
         assertNull(user)
+    }
+
+    private fun createUser() = transaction {
+        User.new {
+            email = this@UserRepositoryImplTest.email
+            displayName = this@UserRepositoryImplTest.displayName
+            passwordHash = this@UserRepositoryImplTest.passwordHash
+        }
     }
 }

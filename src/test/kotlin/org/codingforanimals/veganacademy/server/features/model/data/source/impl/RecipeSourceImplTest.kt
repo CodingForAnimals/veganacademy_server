@@ -2,9 +2,10 @@ package org.codingforanimals.veganacademy.server.features.model.data.source.impl
 
 //import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.features.model.UnitKoinTest
+import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.junit.Test
 import testutils.RecipeObjects
@@ -124,6 +125,28 @@ class RecipeSourceImplTest : UnitKoinTest() {
         }
 
     private fun createRecipes() {
+        val recipeStepDTO = RecipeStepDTO(
+            number = 1,
+            description = "this is step number 1"
+        )
+
+        val recipeIngredientDTO = RecipeIngredientDTO(
+            replacement = null,
+            name = "recipe ingredient",
+            quantity = 1,
+            measurementUnit = "g"
+        )
+
+        val recipeDTO = RecipeDTO(
+            title = "recipe title",
+            description = "recipe description",
+            categories = listOf("MAIN_DISH"),
+            steps = listOf(recipeStepDTO),
+            ingredients = listOf(recipeIngredientDTO),
+            likes = 1,
+            isAccepted = true,
+        )
+
         sut.addRecipe(recipeDTO)
 
         val ing = recipeDTO.ingredients.toMutableList()

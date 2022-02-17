@@ -21,7 +21,6 @@ import testutils.UserObjects.registerRequest
 import testutils.UserObjects.userLoginData
 import testutils.UserObjects.userRegisterData
 import testutils.getParsedResponse
-import testutils.setContentTypeFormUrlEncoded
 import testutils.toJson
 import testutils.withTestServer
 import kotlin.test.assertEquals
@@ -37,7 +36,7 @@ internal class UserRoutesTest : AutoCloseKoinTest() {
     class UserLoginRoutes {
 
         @Test
-        fun `given user doesn't exist, when logging in, then response message indicates so`() = withTestServer {
+        fun `given user doesn't exist, when logging in, then response message send error`() = withTestServer {
             handleRequest(HttpMethod.Post, UserLoginLocation()) {
                 setBody(loginRequest)
             }.apply {
