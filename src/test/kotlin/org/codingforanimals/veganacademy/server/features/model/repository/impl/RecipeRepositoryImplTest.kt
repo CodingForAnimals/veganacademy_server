@@ -3,14 +3,15 @@ package org.codingforanimals.veganacademy.server.features.model.repository.impl
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
 import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
+import org.codingforanimals.veganacademy.server.features.model.data.dto.BaseRecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeStepDTO
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
-import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.After
 import org.junit.Before
@@ -52,7 +53,10 @@ class RecipeRepositoryImplTest : KoinTest {
     @Before
     fun setup() {
         databaseFactory = DatabaseFactoryForUnitTest()
+        runBlocking {
+
         databaseFactory.connect()
+        }
     }
 
     @After

@@ -9,13 +9,15 @@ class DatabaseFactoryForServerTest(appConfig: AppConfig) : DatabaseFactory {
 
     private val dbConfig = appConfig.databaseConfig
 
+    private lateinit var source: HikariDataSource
+
     override fun connect() {
         Database.connect(hikari())
         SchemaDefinition.createSchema()
     }
 
     override fun close() {
-        // needed only in unit testing
+        source.close()
     }
 
     private fun hikari(): HikariDataSource {
@@ -24,7 +26,9 @@ class DatabaseFactoryForServerTest(appConfig: AppConfig) : DatabaseFactory {
         config.jdbcUrl = dbConfig.jdbcDatabaseUrl
         config.maximumPoolSize = dbConfig.maxPoolSize
         config.isAutoCommit = false
+        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         config.validate()
-        return HikariDataSource(config)
+        source = HikariDataSource(config)
+        return source
     }
 }

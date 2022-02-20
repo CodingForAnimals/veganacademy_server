@@ -1,11 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.User
+import org.codingforanimals.veganacademy.server.features.model.data.dto.UserDTO
 import org.codingforanimals.veganacademy.server.features.model.data.source.UserSource
-import org.codingforanimals.veganacademy.server.features.model.dto.UserDTO
-import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.server.features.model.mapper.toDto
 import org.codingforanimals.veganacademy.server.features.model.mapper.toUsersDTO
+import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.server.utils.UserUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 

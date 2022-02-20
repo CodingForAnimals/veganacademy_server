@@ -1,8 +1,8 @@
 package org.codingforanimals.veganacademy.server.features.model.data.source
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.Recipe
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Transaction
 

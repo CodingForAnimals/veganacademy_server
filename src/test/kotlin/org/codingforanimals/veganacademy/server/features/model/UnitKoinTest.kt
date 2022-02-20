@@ -1,6 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.model
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -19,7 +20,10 @@ open class UnitKoinTest: KoinTest {
     @Before
     fun setup() {
         databaseFactory = DatabaseFactoryForUnitTest()
+        runBlocking {
+
         databaseFactory.connect()
+        }
     }
 
     @After

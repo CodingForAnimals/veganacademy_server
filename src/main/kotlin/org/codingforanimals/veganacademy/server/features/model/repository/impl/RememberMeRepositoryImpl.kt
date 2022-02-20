@@ -1,8 +1,8 @@
 package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
 import java.util.*
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.data.source.RememberMeDataSource
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.mapper.toDto
 import org.codingforanimals.veganacademy.server.features.model.repository.RememberMeRepository
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction

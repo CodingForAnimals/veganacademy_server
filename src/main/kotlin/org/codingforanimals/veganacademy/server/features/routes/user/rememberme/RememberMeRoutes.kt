@@ -6,7 +6,7 @@ import io.ktor.locations.Location
 import io.ktor.locations.post
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.service.RememberMeService
 import org.codingforanimals.veganacademy.server.utils.errorResponse
 import org.codingforanimals.veganacademy.server.utils.getRequest

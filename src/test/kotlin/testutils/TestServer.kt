@@ -3,17 +3,12 @@ package testutils
 import com.google.gson.Gson
 import io.ktor.application.ApplicationCall
 import io.ktor.config.MapApplicationConfig
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.TestApplicationRequest
 import io.ktor.server.testing.withTestApplication
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import org.codingforanimals.veganacademy.server.config.plugins.AppConfig
-import org.codingforanimals.veganacademy.server.config.plugins.DatabaseConfig
-import org.codingforanimals.veganacademy.server.config.plugins.ServerConfig
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForServerTest
@@ -47,36 +42,18 @@ fun MapApplicationConfig.createConfigForTesting() {
 
     // Database Config
     put("ktor.database.jdbcDriver", "org.h2.Driver")
-    put("ktor.database.jdbcDatabaseUrl", "jdbc:h2:mem:;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE")
+//    put("ktor.database.jdbcDatabaseUrl", "jdbc:h2:mem:;DATABASE_TO_UPPER=false;MODE=MYSQL")
+    put("ktor.database.jdbcDatabaseUrl", "jdbc:h2:mem:test")
     put("ktor.database.dbUser", "root")
     put("ktor.database.dbPassword", "password")
     put("ktor.database.maxPoolSize", "1")
-
-    // JWT config
-    put("ktor.jwt.issuer", "issuer")
-    put("ktor.jwt.secret", "secret")
-}
-
-fun getAppConfigForUnitTest(): AppConfig {
-    return AppConfig().apply {
-        databaseConfig = DatabaseConfig(
-            jdbcDriver = "org.h2.Driver",
-            jdbcDatabaseUrl = "jdbc:h2:mem:;DATABASE_TO_UPPER=false;MODE=MYSQL",
-            dbUser = "root",
-            dbPassword = "password",
-            maxPoolSize = 1
-        )
-        serverConfig = ServerConfig(isProd = false, isTesting = true)
-    }
 }
 
 @KtorExperimentalLocationsAPI
 fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: TestApplicationEngine.() -> Unit) {
     withTestApplication(
         {
-            (environment.config as MapApplicationConfig).apply {
-                createConfigForTesting()
-            }
+            (environment.config as MapApplicationConfig).apply { createConfigForTesting() }
             run(koinModules = koinModules)
         }, block
     )
@@ -84,7 +61,7 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
 
 val appTestModule = module {
     single { Gson() }
-    single { getAppConfigForUnitTest() }
+    single { AppConfig() }
     single<DatabaseFactory> { DatabaseFactoryForServerTest(get()) }
 
     single { UserUtils() }

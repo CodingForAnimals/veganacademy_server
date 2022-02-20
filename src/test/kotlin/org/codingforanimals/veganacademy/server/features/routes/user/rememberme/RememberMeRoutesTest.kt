@@ -4,18 +4,16 @@ import io.ktor.http.HttpMethod
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.service.RememberMeService
 import org.codingforanimals.veganacademy.server.features.routes.common.Request
 import org.codingforanimals.veganacademy.server.features.routes.user.UserLoginRegisterResponse
+import org.codingforanimals.veganacademy.server.features.routes.user.UserLoginRequest
+import org.codingforanimals.veganacademy.server.features.routes.user.UserRegisterRequest
 import org.junit.Test
 import testutils.RememberMeLocations.RememberMeLocation
-import testutils.RememberMeObjects.rememberMeCredentials
 import testutils.UserLocations.UserRegisterLocation
-import testutils.UserObjects.registerRequest
-import testutils.UserObjects.userRegisterData
 import testutils.getParsedResponse
-import testutils.gson
 import testutils.toJson
 import testutils.withTestServer
 import kotlin.test.assertEquals
@@ -27,7 +25,19 @@ import kotlin.test.assertTrue
 @KtorExperimentalLocationsAPI
 class RememberMeRoutesTest {
 
-    private val request = gson.toJson(Request(rememberMeCredentials))
+    val userLoginData = UserLoginRequest("uuid", "email123", "password123")
+    val loginRequest = Request(userLoginData).toJson()
+
+    val userRegisterData = UserRegisterRequest("uuid", userLoginData.email, userLoginData.password, "name")
+    val registerRequest = Request(userRegisterData).toJson()
+
+    private val request = Request(
+        RememberMeCredentialsDTO(
+            userId = 1,
+            userDeviceUUID = "user_device_UUID",
+            userToken = "user_token"
+        )
+    ).toJson()
 
     @Test
     fun `given incorrect credentials, when asking for rememberMeCredentials, send failure response`() = withTestServer {

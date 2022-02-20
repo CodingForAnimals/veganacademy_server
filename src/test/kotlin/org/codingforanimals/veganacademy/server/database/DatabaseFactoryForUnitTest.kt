@@ -20,8 +20,9 @@ class DatabaseFactoryForUnitTest: DatabaseFactory {
     private fun hikari(): HikariDataSource {
         val config = HikariConfig()
         config.driverClassName = "org.h2.Driver"
-        config.jdbcUrl = "jdbc:h2:mem:;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE"
-        config.maximumPoolSize = 2
+//        config.jdbcUrl = "jdbc:h2:mem:;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE"
+        config.jdbcUrl = "jdbc:h2:mem:test"
+        config.maximumPoolSize = 1
         config.isAutoCommit = true
         config.validate()
         source = HikariDataSource(config)

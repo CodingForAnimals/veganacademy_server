@@ -1,4 +1,4 @@
-package org.codingforanimals.veganacademy.server.features.model.dto
+package org.codingforanimals.veganacademy.server.features.model.data.dto
 
 import com.google.gson.annotations.SerializedName
 

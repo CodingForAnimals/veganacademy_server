@@ -6,12 +6,12 @@ import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIn
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentials
 import org.codingforanimals.veganacademy.server.features.model.data.dao.User
-import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.UserDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.BaseRecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeStepDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.UserDTO
 import org.jetbrains.exposed.sql.SizedIterable
 
 fun Recipe.toDto() = RecipeDTO(

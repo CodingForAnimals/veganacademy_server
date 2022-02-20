@@ -29,8 +29,6 @@ local.properties
 proguard/
 
 # Log Files
-.idea/
-logs/
 *.log
 
 # Android Studio Navigation editor temp files
@@ -91,3 +89,7 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+build
+.gradle
+gradle

@@ -7,12 +7,13 @@ import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeFo
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredient
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStep
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTable
+import org.codingforanimals.veganacademy.server.features.model.data.dto.BaseRecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeIngredientDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeStepDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesOrderByEnum
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
-import org.codingforanimals.veganacademy.server.features.model.dto.BaseRecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeIngredientDTO
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeStepDTO
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SizedCollection
@@ -21,6 +22,7 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.andWhere
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 
@@ -100,10 +102,52 @@ class RecipeSourceImpl : RecipeSource {
         pageNumber: Int,
         filter: RecipesFilter
     ): SizedIterable<Recipe> {
-        val query = createQueryWithFilter(filter)
+        val query = createAndAdjustCategoryQuery(pageSize, pageNumber, filter)
+        return Recipe.wrapRows(query)
+    }
+
+    private fun createAndAdjustCategoryQuery(pageSize: Int, pageNumber: Int, filter: RecipesFilter): Query {
+        val categoryId = findCategoryByName(filter.category)?.id?.value
+        val query = createCategoryQuery(filter, categoryId)
+        addPaginationOffsetAndLimit(pageSize, pageNumber, query)
+        return query
+    }
+
+    private fun createCategoryQuery(filter: RecipesFilter, categoryId: Int?): Query {
+        val query = createBasicCategoryQuery(filter, categoryId)
+        tailorQuery(query, filter)
+        return query
+    }
+
+    private fun createBasicCategoryQuery(filter: RecipesFilter, categoryId: Int?) =
+        (RecipeTable innerJoin RecipeFoodCategoryTable).select {
+            (RecipeTable.id eq RecipeFoodCategoryTable.recipe) and
+                    (RecipeTable.isAccepted eq filter.getAcceptedRecipes) and
+                    (RecipeFoodCategoryTable.category eq categoryId)
+        }
+
+    private fun tailorQuery(query: Query, filter: RecipesFilter) {
+        addTitleFilterIfNeeded(query, filter)
+        addOrderByFilterIfNeeded(query, filter)
+    }
+
+    private fun addOrderByFilterIfNeeded(query: Query, filter: RecipesFilter) {
+        if (filter.orderBy == RecipesOrderByEnum.TITLE.column.name) {
+            query.orderBy(RecipeTable.title.lowerCase())
+        } else {
+            RecipesOrderByEnum.getOrderByColumnName(filter.orderBy)?.let { query.orderBy(it) }
+        }
+    }
+
+    private fun addTitleFilterIfNeeded(query: Query, filter: RecipesFilter) {
+        if (filter.title.isNotBlank()) {
+            query.andWhere { RecipeTable.title.lowerCase() like "%${filter.title}%" }
+        }
+    }
+
+    private fun addPaginationOffsetAndLimit(pageSize: Int, pageNumber: Int, query: Query) {
         val offset = ((pageNumber - 1) * pageSize).toLong()
         query.limit(pageSize + 1, offset)
-        return Recipe.wrapRows(query)
     }
 
     override fun getPaginatedRecipesByIngredients(
@@ -145,25 +189,6 @@ class RecipeSourceImpl : RecipeSource {
 
     override fun acceptRecipeById(id: Int): Boolean {
         return RecipeTable.update({ RecipeTable.id eq id }) { it[isAccepted] = true } > 0
-    }
-
-    private fun createQueryWithFilter(filter: RecipesFilter): Query {
-        val category = findCategoryByName(filter.category)
-        val categoryId = category?.id?.value
-
-        val query = (RecipeTable innerJoin RecipeFoodCategoryTable).select {
-            (RecipeTable.id eq RecipeFoodCategoryTable.recipe) and
-                    (RecipeTable.isAccepted eq filter.getAcceptedRecipes) and
-                    (RecipeFoodCategoryTable.category eq categoryId)
-        }
-
-        if (filter.name.isNotBlank()) {
-            query.andWhere { RecipeTable.title like "%${filter.name}%" }
-        }
-
-        query.orderBy(RecipeTable.title)
-
-        return query
     }
 
     private fun createRecipe(recipeDTO: RecipeDTO): Recipe =

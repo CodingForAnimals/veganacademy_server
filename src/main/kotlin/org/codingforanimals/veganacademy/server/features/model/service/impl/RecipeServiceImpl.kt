@@ -1,6 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.model.service.impl
 
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.server.features.model.service.RecipeService
 import org.codingforanimals.veganacademy.server.features.model.service.RecipeService.Companion.MESSAGE_ACCEPT_FAILURE_DOES_NOT_EXIST
@@ -11,7 +12,6 @@ import org.codingforanimals.veganacademy.server.features.model.service.RecipeSer
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 
 class RecipeServiceImpl(
     private val recipeRepository: RecipeRepository,

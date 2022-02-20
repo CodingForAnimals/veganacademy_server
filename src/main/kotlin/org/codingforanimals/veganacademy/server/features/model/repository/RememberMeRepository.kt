@@ -1,6 +1,6 @@
 package org.codingforanimals.veganacademy.server.features.model.repository
 
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
 
 interface RememberMeRepository {
     suspend fun getRememberMeCredentials(userId: Int,deviceUUID: String): RememberMeCredentialsDTO?

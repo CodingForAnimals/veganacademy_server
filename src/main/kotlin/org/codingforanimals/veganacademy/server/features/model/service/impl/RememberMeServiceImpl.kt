@@ -1,6 +1,6 @@
 package org.codingforanimals.veganacademy.server.features.model.service.impl
 
-import org.codingforanimals.veganacademy.server.features.model.dto.RememberMeCredentialsDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
 import org.codingforanimals.veganacademy.server.features.model.repository.RememberMeRepository
 import org.codingforanimals.veganacademy.server.features.model.service.RememberMeService
 import org.codingforanimals.veganacademy.server.features.model.service.RememberMeService.Companion.MESSAGE_LOGGED_IN_FAILURE

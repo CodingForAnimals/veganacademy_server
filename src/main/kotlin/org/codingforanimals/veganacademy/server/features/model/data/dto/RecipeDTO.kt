@@ -1,4 +1,4 @@
-package org.codingforanimals.veganacademy.server.features.model.dto
+package org.codingforanimals.veganacademy.server.features.model.data.dto
 
 class RecipeDTO(
     var id: Int? = null,

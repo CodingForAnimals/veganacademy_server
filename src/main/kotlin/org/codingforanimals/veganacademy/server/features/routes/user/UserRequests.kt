@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.routes.user
 
 import com.google.gson.annotations.SerializedName
-import org.codingforanimals.veganacademy.server.features.model.dto.UserDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.UserDTO
 
 data class UserLoginRequest(
     @SerializedName("user_device_uuid") val deviceUUID: String,

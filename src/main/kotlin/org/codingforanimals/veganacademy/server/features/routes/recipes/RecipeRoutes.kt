@@ -7,7 +7,8 @@ import io.ktor.locations.get
 import io.ktor.locations.post
 import io.ktor.routing.Route
 import org.codingforanimals.veganacademy.server.config.plugins.AUTH_SESSION
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
 import org.codingforanimals.veganacademy.server.features.model.service.RecipeService
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.utils.errorResponse

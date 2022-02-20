@@ -2,11 +2,11 @@ package org.codingforanimals.veganacademy.server.database
 
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategory
 import org.codingforanimals.veganacademy.server.features.model.data.dao.FoodCategoryTable
-import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentialsTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeFoodCategoryTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeIngredientTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeStepTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.RecipeTable
+import org.codingforanimals.veganacademy.server.features.model.data.dao.RememberMeCredentialsTable
 import org.codingforanimals.veganacademy.server.features.model.data.dao.UserTable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction

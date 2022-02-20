@@ -1,36 +1,32 @@
 package org.codingforanimals.veganacademy.server.features.model.repository.impl
 
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
 import org.codingforanimals.veganacademy.server.features.model.data.source.RecipeSource
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.mapper.toDto
 import org.codingforanimals.veganacademy.server.features.model.mapper.toRecipeDtoList
 import org.codingforanimals.veganacademy.server.features.model.repository.RecipeRepository
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationInfo
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository {
 
-    override suspend fun findRecipeById(id: Int): RecipeDTO? {
-        return newSuspendedTransaction {
-            source.findRecipeById(id)?.toDto()
+    override suspend fun findRecipeById(id: Int): RecipeDTO? = newSuspendedTransaction {
+        source.findRecipeById(id)?.toDto()
+    }
+
+    override suspend fun addRecipe(recipeDTO: RecipeDTO): RecipeDTO? = newSuspendedTransaction {
+        source.addRecipe(recipeDTO).let {
+            val r = source.findRecipeById(it)
+            r?.toDto()
         }
     }
 
-    override suspend fun addRecipe(recipeDTO: RecipeDTO): RecipeDTO? {
-        return newSuspendedTransaction {
-            source.addRecipe(recipeDTO).let {
-                val r = source.findRecipeById(it)
-                    r?.toDto()
-            }
-        }
-    }
-
-    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipesFilter>): PaginationResponse<RecipesFilter, RecipeDTO> {
-        return newSuspendedTransaction {
+    override suspend fun getPaginatedRecipes(paginationRequest: PaginationRequest<RecipesFilter>): PaginationResponse<RecipesFilter, RecipeDTO> =
+        newSuspendedTransaction {
             var recipesDTO = getPaginatedRecipesByCategoriesOrIngredients(paginationRequest, this)
 
             val hasMoreContent = recipesDTO.size == paginationRequest.paginationInfo.pageSize + 1
@@ -38,13 +34,12 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
 
             return@newSuspendedTransaction createPaginationResponse(recipesDTO, paginationRequest, hasMoreContent)
         }
-    }
 
     private fun getPaginatedRecipesByCategoriesOrIngredients(
         paginationRequest: PaginationRequest<RecipesFilter>,
         transaction: Transaction
     ): List<RecipeDTO> = with(paginationRequest) {
-        return if (paginationRequest.filter.ingredients.isEmpty()) {
+        if (paginationRequest.filter.ingredients.isEmpty()) {
             source.getPaginatedRecipesByCategory(
                 paginationInfo.pageSize,
                 paginationInfo.pageNumber,
@@ -81,11 +76,9 @@ class RecipeRepositoryImpl(private val source: RecipeSource) : RecipeRepository 
         )
     }
 
-    override suspend fun acceptRecipeById(id: Int): RecipeDTO? {
-        return newSuspendedTransaction {
-            source.acceptRecipeById(id).takeIf { it }?.let {
-                source.findRecipeById(id)?.toDto()
-            }
+    override suspend fun acceptRecipeById(id: Int): RecipeDTO? = newSuspendedTransaction {
+        source.acceptRecipeById(id).takeIf { it }?.let {
+            source.findRecipeById(id)?.toDto()
         }
     }
 }

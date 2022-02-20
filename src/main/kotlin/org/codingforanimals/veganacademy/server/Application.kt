@@ -19,5 +19,5 @@ fun Application.run(koinModules: List<Module> = modules) {
     configureApp(koinModules)
 
     val databaseFactory by inject<DatabaseFactory>()
-    databaseFactory.connect()
+        databaseFactory.connect()
 }

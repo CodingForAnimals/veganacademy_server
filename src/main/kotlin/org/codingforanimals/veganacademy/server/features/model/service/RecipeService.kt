@@ -1,10 +1,10 @@
 package org.codingforanimals.veganacademy.server.features.model.service
 
-import org.codingforanimals.veganacademy.server.features.model.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
+import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationRequest
 import org.codingforanimals.veganacademy.server.features.routes.common.PaginationResponse
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
-import org.codingforanimals.veganacademy.server.features.routes.recipes.RecipesFilter
 
 interface RecipeService {
 

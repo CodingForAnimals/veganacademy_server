@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
 import org.codingforanimals.veganacademy.server.database.DatabaseFactoryForUnitTest
@@ -35,7 +36,10 @@ class UserRepositoryImplTest {
     @Before
     fun setup() {
         database = DatabaseFactoryForUnitTest()
+        runBlocking {
+
         database.connect()
+        }
 
         every { userUtils.hashPassword(any()) } returns passwordHash
     }
