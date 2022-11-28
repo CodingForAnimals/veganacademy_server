@@ -19,7 +19,7 @@ plugins {
 group = "org.codingforanimals"
 version = "0.0.1"
 application {
-    mainClass.set("org.codingforanimals.ApplicationKt")
+    mainClass.set("org.codingforanimals.veganacademy.server.ApplicationKt")
 }
 
 repositories {
