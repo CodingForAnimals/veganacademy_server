@@ -22,6 +22,11 @@ application {
     mainClass.set("org.codingforanimals.veganacademy.server.ApplicationKt")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 repositories {
     mavenCentral()
 }
