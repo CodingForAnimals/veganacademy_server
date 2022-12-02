@@ -16,6 +16,10 @@ plugins {
     kotlin("jvm") version "1.6.0"
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+}
+
 group = "org.codingforanimals"
 version = "0.0.1"
 application {
@@ -36,17 +40,18 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-gson:$ktor_version")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-gson:$ktor_version")
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
-    implementation("io.ktor:ktor-auth:$ktor_version")
-    implementation("io.ktor:ktor-locations:$ktor_version")
-    implementation("io.ktor:ktor-auth:$ktor_version")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("io.ktor:ktor-server-locations:$ktor_version")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
 
     // Logger
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("io.ktor:ktor-server-call-logging:$ktor_version")
 
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")

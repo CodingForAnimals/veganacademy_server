@@ -2,12 +2,12 @@ package org.codingforanimals.veganacademy.server.utils
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.ktor.application.ApplicationCall
-import io.ktor.application.log
 import io.ktor.http.HttpStatusCode
-import io.ktor.request.receive
-import io.ktor.request.uri
-import io.ktor.response.respond
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.log
+import io.ktor.server.request.receive
+import io.ktor.server.request.uri
+import io.ktor.server.response.respond
 import org.codingforanimals.veganacademy.server.features.routes.common.Request
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
 import org.koin.java.KoinJavaComponent.inject

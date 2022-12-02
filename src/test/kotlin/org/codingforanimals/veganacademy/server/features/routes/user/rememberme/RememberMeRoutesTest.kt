@@ -1,7 +1,6 @@
 package org.codingforanimals.veganacademy.server.features.routes.user.rememberme
 
 import io.ktor.http.HttpMethod
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import org.codingforanimals.veganacademy.server.features.model.data.dto.RememberMeCredentialsDTO
@@ -22,7 +21,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@KtorExperimentalLocationsAPI
 class RememberMeRoutesTest {
 
     val userLoginData = UserLoginRequest("uuid", "email123", "password123")

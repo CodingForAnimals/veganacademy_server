@@ -1,11 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.routes.recipes
 
-import io.ktor.application.call
-import io.ktor.auth.authenticate
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.routing.Route
+import io.ktor.server.application.call
+import io.ktor.server.auth.authenticate
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.locations.get
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.post
 import org.codingforanimals.veganacademy.server.config.plugins.AUTH_SESSION
 import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter

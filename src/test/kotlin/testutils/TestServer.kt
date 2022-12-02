@@ -1,13 +1,15 @@
+@file:OptIn(KtorExperimentalLocationsAPI::class)
+
 package testutils
 
 import com.google.gson.Gson
-import io.ktor.application.ApplicationCall
-import io.ktor.config.MapApplicationConfig
-import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.withTestApplication
-import io.ktor.sessions.sessions
-import io.ktor.sessions.set
 import org.codingforanimals.veganacademy.server.config.plugins.AppConfig
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
@@ -33,6 +35,7 @@ import org.codingforanimals.veganacademy.server.features.model.service.impl.User
 import org.codingforanimals.veganacademy.server.run
 import org.codingforanimals.veganacademy.server.utils.UserUtils
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 fun MapApplicationConfig.createConfigForTesting() {
@@ -49,7 +52,6 @@ fun MapApplicationConfig.createConfigForTesting() {
     put("ktor.database.maxPoolSize", "1")
 }
 
-@KtorExperimentalLocationsAPI
 fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: TestApplicationEngine.() -> Unit) {
     withTestApplication(
         {

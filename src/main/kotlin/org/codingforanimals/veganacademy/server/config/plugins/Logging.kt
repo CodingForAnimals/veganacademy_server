@@ -2,8 +2,9 @@ package org.codingforanimals.veganacademy.server.config.plugins
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
-import io.ktor.application.*
-import io.ktor.features.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.callloging.CallLogging
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
 

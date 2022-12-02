@@ -1,10 +1,10 @@
 package org.codingforanimals.veganacademy.server.config.plugins
 
-import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.auth.Principal
-import io.ktor.sessions.Sessions
-import io.ktor.sessions.cookie
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.auth.Principal
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.cookie
 import org.koin.ktor.ext.inject
 
 fun Application.configureSessions() {
