@@ -13,9 +13,9 @@ fun Application.setupConfig() {
 
     val databaseObject = environment.config.config("ktor.database")
     val jdbcDriver = databaseObject.property("jdbcDriver").getString()
-    val jdbcDatabaseUrl = databaseObject.property("jdbcDatabaseUrl").getString()
-    val dbUser = databaseObject.property("dbUser").getString()
-    val dbPassword = databaseObject.property("dbPassword").getString()
+    val jdbcDatabaseUrl = System.getenv("DB_URL").toString()
+    val dbUser = System.getenv("DB_USER").toString()
+    val dbPassword = System.getenv("DB_PASSWORD").toString()
     val maxPoolSize = databaseObject.property("maxPoolSize").getString().toInt()
     appConfig.databaseConfig = DatabaseConfig(jdbcDriver, jdbcDatabaseUrl, dbUser, dbPassword, maxPoolSize)
 }
