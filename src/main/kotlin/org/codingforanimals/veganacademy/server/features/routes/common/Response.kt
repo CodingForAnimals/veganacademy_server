@@ -1,15 +1,14 @@
 package org.codingforanimals.veganacademy.server.features.routes.common
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.log
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respond
 
 class Response<T> private constructor(
     var success: Boolean,
     var message: String?,
     var content: T?,
-){
+) {
 
     companion object {
         fun <T> success(message: String, content: T? = null): Response<T> {

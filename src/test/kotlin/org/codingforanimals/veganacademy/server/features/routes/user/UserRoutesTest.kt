@@ -1,11 +1,11 @@
 package org.codingforanimals.veganacademy.server.features.routes.user
 
 import io.ktor.http.HttpMethod
-import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
-import io.ktor.sessions.get
-import io.ktor.sessions.sessions
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.features.model.service.UserService
 import org.codingforanimals.veganacademy.server.features.routes.common.Request

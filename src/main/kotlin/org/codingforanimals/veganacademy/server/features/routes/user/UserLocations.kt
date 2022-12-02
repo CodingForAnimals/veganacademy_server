@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.routes.user
 
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.locations.Location
 
 
 @KtorExperimentalLocationsAPI

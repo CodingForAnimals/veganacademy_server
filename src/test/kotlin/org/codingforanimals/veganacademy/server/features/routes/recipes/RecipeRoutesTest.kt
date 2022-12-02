@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.features.routes.recipes
 
 import io.ktor.http.HttpMethod
-import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody

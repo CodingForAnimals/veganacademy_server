@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server.config
 
-import io.ktor.application.Application
-import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.application.Application
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
 import org.codingforanimals.veganacademy.server.config.plugins.configureAuth
 import org.codingforanimals.veganacademy.server.config.plugins.configureGson
 import org.codingforanimals.veganacademy.server.config.plugins.configureKoin

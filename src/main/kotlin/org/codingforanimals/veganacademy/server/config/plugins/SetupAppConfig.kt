@@ -1,6 +1,6 @@
 package org.codingforanimals.veganacademy.server.config.plugins
 
-import io.ktor.application.*
+import io.ktor.server.application.Application
 import org.koin.ktor.ext.inject
 
 fun Application.setupConfig() {

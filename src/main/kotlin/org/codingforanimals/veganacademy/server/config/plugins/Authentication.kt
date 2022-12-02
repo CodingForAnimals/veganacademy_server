@@ -1,12 +1,11 @@
 package org.codingforanimals.veganacademy.server.config.plugins
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.session
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.session
+import io.ktor.server.response.respond
 import org.codingforanimals.veganacademy.server.features.model.repository.UserRepository
 import org.codingforanimals.veganacademy.server.features.routes.common.Response
 import org.koin.ktor.ext.inject

@@ -1,14 +1,14 @@
 package org.codingforanimals.veganacademy.server.features.routes.user
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.routing.Route
-import io.ktor.sessions.clear
-import io.ktor.sessions.sessions
-import io.ktor.sessions.set
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.call
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.locations.get
+import io.ktor.server.locations.post
+import io.ktor.server.routing.Route
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import org.codingforanimals.veganacademy.server.config.plugins.UserSession
 import org.codingforanimals.veganacademy.server.features.model.service.UserService
 import org.codingforanimals.veganacademy.server.features.model.service.UserService.Companion.MESSAGE_LOGOUT_SUCCESS

@@ -1,7 +1,7 @@
 package org.codingforanimals.veganacademy.server
 
-import io.ktor.application.Application
-import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.server.application.Application
+import io.ktor.server.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.netty.EngineMain
 import org.codingforanimals.veganacademy.server.config.configureApp
 import org.codingforanimals.veganacademy.server.database.DatabaseFactory
@@ -19,5 +19,5 @@ fun Application.run(koinModules: List<Module> = modules) {
     configureApp(koinModules)
 
     val databaseFactory by inject<DatabaseFactory>()
-        databaseFactory.connect()
+    databaseFactory.connect()
 }
