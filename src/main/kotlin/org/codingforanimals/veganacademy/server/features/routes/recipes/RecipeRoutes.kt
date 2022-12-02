@@ -4,8 +4,8 @@ import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.locations.get
+import io.ktor.server.locations.post
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
 import org.codingforanimals.veganacademy.server.config.plugins.AUTH_SESSION
 import org.codingforanimals.veganacademy.server.features.model.data.dto.RecipeDTO
 import org.codingforanimals.veganacademy.server.features.model.data.recipes.RecipesFilter

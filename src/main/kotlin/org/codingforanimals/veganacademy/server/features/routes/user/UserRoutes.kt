@@ -4,8 +4,8 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.locations.get
+import io.ktor.server.locations.post
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
