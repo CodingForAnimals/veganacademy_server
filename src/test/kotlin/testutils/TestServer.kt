@@ -57,6 +57,7 @@ fun withTestServer(koinModules: List<Module> = listOf(appTestModule), block: Tes
             (environment.config as MapApplicationConfig).apply { createConfigForTesting() }
             run(koinModules = koinModules)
         }, block
+
     )
 }
 
