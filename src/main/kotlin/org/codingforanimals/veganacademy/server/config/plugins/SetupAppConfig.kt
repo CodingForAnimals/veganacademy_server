@@ -7,17 +7,29 @@ fun Application.setupConfig() {
     val appConfig by inject<AppConfig>()
 
     val serverObject = environment.config.config("ktor.server")
-    val isProd = serverObject.property("isProd").getString().toBoolean()
-    val isTesting = serverObject.property("isTesting").getString().toBoolean()
-    appConfig.serverConfig = ServerConfig(isProd, isTesting)
+    appConfig.serverConfig = ServerConfig(
+        isProd = serverObject.property("isProd").getString().toBoolean(),
+        isTesting = serverObject.property("isTesting").getString().toBoolean(),
+    )
 
-    val databaseObject = environment.config.config("ktor.database")
-    val jdbcDriver = databaseObject.property("jdbcDriver").getString()
-    val jdbcDatabaseUrl = System.getenv("DB_URL").toString()
-    val dbUser = System.getenv("DB_USER").toString()
-    val dbPassword = System.getenv("DB_PASS").toString()
-    val maxPoolSize = databaseObject.property("maxPoolSize").getString().toInt()
-    appConfig.databaseConfig = DatabaseConfig(jdbcDriver, jdbcDatabaseUrl, dbUser, dbPassword, maxPoolSize)
+    appConfig.databaseConfig = if (appConfig.serverConfig.isTesting) {
+        DatabaseConfig(
+            jdbcDriver = "org.h2.Driver",
+            maxPoolSize = 1,
+            jdbcDatabaseUrl = "jdbc:h2:mem:test",
+            dbUser = "root",
+            dbPassword = "password",
+        )
+    } else {
+        val databaseObject = environment.config.config("ktor.database")
+        DatabaseConfig(
+            jdbcDriver = databaseObject.property("jdbcDriver").getString(),
+            maxPoolSize = databaseObject.property("maxPoolSize").getString().toInt(),
+            jdbcDatabaseUrl = System.getenv("DB_URL").toString(),
+            dbUser = System.getenv("DB_USER").toString(),
+            dbPassword = System.getenv("DB_PASS").toString(),
+        )
+    }
 }
 
 class AppConfig {

@@ -16,7 +16,7 @@ fun Application.configureLogging() {
 
     val appConfig by inject<AppConfig>()
 
-    if (!appConfig.serverConfig.isProd) {
+    if (appConfig.serverConfig.isProd) {
         val root = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME) as Logger
         root.level = Level.TRACE
     }

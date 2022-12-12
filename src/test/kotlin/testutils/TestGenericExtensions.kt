@@ -13,7 +13,11 @@ val gson = Gson()
 
 inline fun <reified T> TestApplicationCall.getParsedResponse(): Response<T> {
     val responseType = object : TypeToken<Response<T>>() {}.type
-    return gson.fromJson(response.content, responseType)
+    return if (response.content == null) {
+        Response.failure("null content", null)
+    } else {
+        gson.fromJson(response.content, responseType) as Response<T>
+    }
 }
 
 fun TestApplicationRequest.setContentTypeFormUrlEncoded() =

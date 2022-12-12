@@ -35,7 +35,6 @@ import org.codingforanimals.veganacademy.server.features.model.service.impl.User
 import org.codingforanimals.veganacademy.server.run
 import org.codingforanimals.veganacademy.server.utils.UserUtils
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 fun MapApplicationConfig.createConfigForTesting() {
